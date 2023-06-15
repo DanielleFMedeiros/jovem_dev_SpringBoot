@@ -1,4 +1,4 @@
-package br.com.trier.springmatutino.resources;
+/*package br.com.trier.springmatutino.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,3 +50,4 @@ public class UserResource {
 		return user;
 	}
 }
+*/

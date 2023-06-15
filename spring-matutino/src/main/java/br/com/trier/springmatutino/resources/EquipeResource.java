@@ -13,39 +13,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.trier.springmatutino.domain.User;
-import br.com.trier.springmatutino.services.UserService;
+import br.com.trier.springmatutino.domain.Equipe;
+import br.com.trier.springmatutino.services.EquipeService;
 
 @RestController
-@RequestMapping(value = "/usuarios")
-public class UserResource {
+@RequestMapping(value = "equipes")
+public class EquipeResource {
 
 	@Autowired
-	private UserService service;
+	private EquipeService service;
 
 	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User user) {
-		User newUser = service.salvar(user);
-		return newUser != null ? ResponseEntity.ok(newUser) : ResponseEntity.badRequest().build();
+	public ResponseEntity<Equipe> insert(@RequestBody Equipe equipe) {
+		Equipe newEquipe = service.salvar(equipe);
+		return newEquipe != null ? ResponseEntity.ok(newEquipe) : ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<User> buscaPorCodigo(@PathVariable Integer id) {
-		User user = service.findById(id);
-		return user != null ? ResponseEntity.ok(user) : ResponseEntity.noContent().build();
+	public ResponseEntity<Equipe> buscaPorCodigo(@PathVariable Integer id) {
+		Equipe equipe = service.findById(id);
+		return equipe != null ? ResponseEntity.ok(equipe) : ResponseEntity.noContent().build();
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> listarTodos() {
-		List<User> lista = service.listAll();
+	public ResponseEntity<List<Equipe>> listarTodos() {
+		List<Equipe> lista = service.listAll();
 		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
-		user.setId(id);
-		user = service.update(user);
-		return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
+	public ResponseEntity<Equipe> update(@PathVariable Integer id, @RequestBody Equipe equipe) {
+		equipe.setId(id);
+		equipe = service.update(equipe);
+		return equipe != null ? ResponseEntity.ok(equipe) : ResponseEntity.badRequest().build();
 	}
 	
 	@DeleteMapping("/{id}")

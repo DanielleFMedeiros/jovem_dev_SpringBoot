@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/dados")
 public class DiceRollResource {
 
-    @GetMapping("/{qtde}/{aposta}")
-    public String verificaAposta(@PathVariable("qtde") int qtde, @PathVariable("aposta") int aposta) {
+    @GetMapping("jogar/{qtde}/{aposta}")
+    public String verificaAposta(@PathVariable int qtde, @PathVariable int aposta) {
         if (qtde < 1 || qtde > 4) {
             return "Escolha entre 1 e 4 dados.";
         }
 
-        if (qtde * 6 < aposta) {
+        if (qtde * 6 < aposta || aposta > qtde * 6) {
             return "O número apostado deve condizer com algum possível resultado.";
         }
 

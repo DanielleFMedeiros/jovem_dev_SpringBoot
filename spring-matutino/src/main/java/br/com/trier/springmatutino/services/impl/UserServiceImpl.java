@@ -14,9 +14,9 @@ import br.com.trier.springmatutino.services.UserService;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	//posso utilizar instancia que está na memória?
+	// posso utilizar instancia que está na memória?
 	UserRepository repository;
-	
+
 	@Override
 	public User salvar(User user) {
 		return repository.save(user);
@@ -41,10 +41,25 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
-		if(user != null) {
+		if (user != null) {
 			repository.delete(user);
 		}
-		
-	} 
+
+	}
+
+	@Override
+	public List<User> findByName(String name) {
+		return repository.findByName(name);
+	}
+
+	@Override
+	public List<User> findByNameStartingWithIgnoreCase(String name) {
+		return repository.findByNameStartingWithIgnoreCase(name);
+	}
+
+	@Override
+	public List<User> findByEmail(String email) {
+		return repository.findByEmail(email);
+	}
 
 }

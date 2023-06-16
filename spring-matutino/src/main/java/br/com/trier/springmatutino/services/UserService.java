@@ -10,4 +10,7 @@ public interface UserService {
 	User findById(Integer id);
 	User update(User user);
 	void delete(Integer id);
+	List<User> findByName(String name);
+	List<User> findByNameStartingWithIgnoreCase(String name);
+	List<User> findByEmail(String email);
 }

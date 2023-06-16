@@ -77,8 +77,8 @@ public class PaisServiceTest extends BaseTests{
 	void findPaisByNameStartsWithTest() {
 		List<Pais>lista = paisService.findByName("u");
 		assertEquals(0, lista.size());
-		lista = paisService.findByName("Argentina");
-		assertEquals(1, lista.size());
+		lista = paisService.findByNameStartingWithIgnoreCase("Arg");
+		assertEquals(3, lista.size());
 		lista = paisService.findByName("França");
 		assertEquals(0, lista.size());
 	}

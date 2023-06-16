@@ -12,4 +12,6 @@ public interface PaisRepository extends JpaRepository<Pais, Integer> {
 
 	List<Pais> findByName(String name);
 
+	List<Pais> findByNameStartingWithIgnoreCase(String name);
+
 }

@@ -14,7 +14,6 @@ import br.com.trier.springmatutino.services.PaisService;
 public class PaisServiceImpl implements PaisService {
 
 	@Autowired
-	//posso utilizar instancia que está na memória?
 	PaisRepository repository;
 	
 	@Override

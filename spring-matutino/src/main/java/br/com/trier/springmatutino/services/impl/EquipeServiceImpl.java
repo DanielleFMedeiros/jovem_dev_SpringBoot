@@ -14,7 +14,6 @@ import br.com.trier.springmatutino.services.EquipeService;
 public class EquipeServiceImpl implements EquipeService {
 
 	@Autowired
-	//posso utilizar instancia que está na memória?
 	EquipeRepository repository;
 	
 	@Override
@@ -45,6 +44,16 @@ public class EquipeServiceImpl implements EquipeService {
 			repository.delete(equipe);
 		}
 		
+	}
+
+	@Override
+	public List<Equipe> findByName(String name) {
+		return repository.findByName(name) ;
+	} 
+
+	@Override
+	public List<Equipe> findByNameStartingWithIgnoreCase(String name) {
+		return repository.findByNameStartingWithIgnoreCase(name) ;
 	} 
 
 }

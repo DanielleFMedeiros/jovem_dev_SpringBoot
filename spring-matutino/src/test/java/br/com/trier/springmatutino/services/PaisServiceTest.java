@@ -72,13 +72,22 @@ public class PaisServiceTest extends BaseTests{
 	}
 	
 	@Test
+	@DisplayName("Teste delete país invalido")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	void deleteNonExistentTest() {
+		paisService.delete(20);
+		List<Pais> lista = paisService.listAll();
+		assertEquals(3, lista.size());
+	}
+	
+	@Test
 	@DisplayName("Teste buscar país por nome que inicia com")
 	@Sql({"classpath:/resources/sqls/pais.sql"})
 	void findPaisByNameStartsWithTest() {
 		List<Pais>lista = paisService.findByName("u");
 		assertEquals(0, lista.size());
-		lista = paisService.findByNameStartingWithIgnoreCase("Arg");
-		assertEquals(3, lista.size());
+		lista = paisService.findByNameStartingWithIgnoreCase("Argentina");
+		assertEquals(1, lista.size());
 		lista = paisService.findByName("França");
 		assertEquals(0, lista.size());
 	}

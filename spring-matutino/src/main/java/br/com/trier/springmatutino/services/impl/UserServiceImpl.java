@@ -14,7 +14,6 @@ import br.com.trier.springmatutino.services.UserService;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	// posso utilizar instancia que está na memória?
 	UserRepository repository;
 
 	@Override

@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Setter
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,6 +21,7 @@ public class Campeonato {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column (name = "id_campeonato")
+	@Setter
 	private Integer id;
 	
 	@Column (name = "descricao_campeonato")

@@ -80,15 +80,33 @@ public class UserServiceTest extends BaseTests{
 	}
 	
 	@Test
+	@DisplayName("Teste delete usuario invalido")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
+	void deleteNonExistentTest() {
+		userService.delete(20);
+		List<User> lista = userService.listAll();
+		assertEquals(2, lista.size());
+	}
+	
+	
+	@Test
 	@DisplayName("Teste buscar usuário por nome que inicia com")
 	@Sql({"classpath:/resources/sqls/usuario.sql"})
-	void findUserByNameStartingWithTest() {
-		List<User> lista = userService.findByName("u");
-		assertEquals(1, lista.size());
-		lista = userService.findByName("usuario teste 2");
+	void findUserByNameStartsWithTest() {
+		List<User> lista = userService.findByNameStartingWithIgnoreCase("Usuario");
 		assertEquals(2, lista.size());
+		lista = userService.findByName("Usuario teste 1");
+		assertEquals(1, lista.size());
 		lista = userService.findByName("c");
 		assertEquals(0, lista.size());
+	}
+	
+	@Test
+	@DisplayName("Teste buscar usuário por email")
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
+	void findByEmailTest() {
+		var usuario = userService.findByEmail("teste2@teste.com.br");
+		assertEquals(1, usuario.size());
 	}
 
 }

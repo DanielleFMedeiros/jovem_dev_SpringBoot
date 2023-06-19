@@ -14,37 +14,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/dados")
 public class DiceRollResource {
 
-    @GetMapping("jogar/{qtde}/{aposta}")
-    public String verificaAposta(@PathVariable int qtde, @PathVariable int aposta) {
-        if (qtde < 1 || qtde > 4) {
-            return "Escolha entre 1 e 4 dados.";
-        }
+	@GetMapping("jogar/{qtde}/{aposta}")
+	public String verificaAposta(@PathVariable int qtde, @PathVariable int aposta) {
+		if (qtde < 1 || qtde > 4) {
+			return "Escolha entre 1 e 4 dados.";
+		}
 
-        if (qtde * 6 < aposta || aposta > qtde * 6) {
-            return "O número apostado deve condizer com algum possível resultado.";
-        }
+		if (qtde * 6 < aposta || aposta > qtde * 6) {
+			return "O número apostado deve condizer com algum possível resultado.";
+		}
 
-        List<Integer> resultado = new ArrayList<>();
-        Random random = new Random();
-        int soma = 0;
+		List<Integer> resultado = new ArrayList<>();
+		Random random = new Random();
+		int soma = 0;
 
-        for (int i = 0; i < qtde; i++) {
-            int numeroAleatorio = random.nextInt(6) + 1;
-            resultado.add(numeroAleatorio);
-            soma += numeroAleatorio;
-        }
-        
-        double diferenca = Math.abs(aposta - soma); 
-        double difPorcentagem = (diferenca / Math.max(aposta, soma)) * 100;
+		for (int i = 0; i < qtde; i++) {
+			int numeroAleatorio = random.nextInt(6) + 1;
+			resultado.add(numeroAleatorio);
+			soma += numeroAleatorio;
+		}
 
-        DecimalFormat df = new DecimalFormat("#.00");
-        String porcentagemFormatada = df.format(difPorcentagem);
+		double diferenca = Math.abs(aposta - soma);
+		double difPorcentagem = (diferenca / Math.max(aposta, soma)) * 100;
 
-        String response = "O número apostado foi: " + aposta + "\n" +
-                "O resultado dos " + qtde + " dados foi: " + resultado + "\n" +
-                "A soma dos números sorteados foi: " + soma + "\n" +
-                "Percentual em relação ao sorteio: " + porcentagemFormatada + "%";
+		DecimalFormat df = new DecimalFormat("#.00");
+		String porcentagemFormatada = df.format(difPorcentagem);
 
-        return response;
-    }
+		String response = "O número apostado foi: " + aposta + "\n" + "O resultado dos " + qtde + " dados foi: "
+				+ resultado + "\n" + "A soma dos números sorteados foi: " + soma + "\n"
+				+ "Percentual em relação ao sorteio: " + porcentagemFormatada + "%";
+
+		return response;
+	}
 }

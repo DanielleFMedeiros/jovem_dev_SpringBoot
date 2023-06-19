@@ -10,5 +10,6 @@ import br.com.trier.springmatutino.domain.Pais;
 @Repository
 public interface PaisRepository extends JpaRepository<Pais, Integer> {
 	List<Pais> findByName(String name);
+
 	List<Pais> findByNameStartingWithIgnoreCase(String name);
 }

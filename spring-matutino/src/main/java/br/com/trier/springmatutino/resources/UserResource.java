@@ -37,9 +37,14 @@ public class UserResource {
 
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<User>> buscaPorNome(@PathVariable String name) {
-		List<User> lista = service.findByName(name);
-		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.findByName(name));
 	}
+	
+	@GetMapping("/email/{email}")
+	public ResponseEntity<User> buscaPorEmail(@PathVariable String email) {
+		return ResponseEntity.ok(service.findByEmail(email));
+	}
+	
 	
 	@GetMapping
 	public ResponseEntity<List<User>> listarTodos() {
@@ -53,6 +58,7 @@ public class UserResource {
 		user = service.update(user);
 		return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
 	}
+	
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {

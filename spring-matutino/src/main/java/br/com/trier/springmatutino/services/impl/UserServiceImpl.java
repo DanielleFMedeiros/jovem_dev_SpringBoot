@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import br.com.trier.springmatutino.domain.User;
 import br.com.trier.springmatutino.repositories.UserRepository;
 import br.com.trier.springmatutino.services.UserService;
+import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
+import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,39 +18,53 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository repository;
 
+	private void findByEmail (User obj) {
+		User user = repository.findByEmail(obj.getEmail());
+		if(user != null && user.getId()!=obj.getId()) {
+			throw new ViolacaoIntegridade("E-mail já cadastrado: %s".formatted(obj.getEmail()));
+		}
+	}
+	
+	
 	@Override
 	public User salvar(User user) {
+		findByEmail(user);
 		return repository.save(user);
 	}
 
 	@Override
 	public List<User> listAll() {
 		return repository.findAll();
+		/*
+		 * FIXME: lançar exceção 
+		 */
 	}
 
 	@Override
 	public User findById(Integer id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.orElse(null);
+		return obj.orElseThrow(() -> new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(id)));
 	}
 
 	@Override
 	public User update(User user) {
+		findByEmail(user);
 		return repository.save(user);
 	}
 
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
-		if (user != null) {
-			repository.delete(user);
-		}
-
+		repository.delete(user);
 	}
 
 	@Override
 	public List<User> findByName(String name) {
-		return repository.findByName(name);
+		List<User> lista = repository.findByNameStartingWithIgnoreCase(name);
+		if(lista.size() == 0) {
+			throw new ObjetoNaoEncontrado("Nenhum nome de usuário começa com o nome " + name);
+		}
+		return lista;
 	}
 
 	@Override
@@ -57,8 +73,11 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByEmail(String email) {
-		return repository.findByEmail(email);
+	public User findByEmail(String email) {
+		User user = repository.findByEmail(email);
+		if(!user.getEmail().contains(email)) {
+			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
+		}
+		return user;
 	}
-
 }

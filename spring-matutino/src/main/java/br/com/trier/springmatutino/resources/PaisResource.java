@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.services.PaisService;
 
+/*
+ * FIXME: Falta implementar busca por nome like
+ */
 @RestController
 @RequestMapping(value = "paises")
 public class PaisResource {
@@ -47,7 +50,7 @@ public class PaisResource {
 		pais = service.update(pais);
 		return pais != null ? ResponseEntity.ok(pais) : ResponseEntity.badRequest().build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);

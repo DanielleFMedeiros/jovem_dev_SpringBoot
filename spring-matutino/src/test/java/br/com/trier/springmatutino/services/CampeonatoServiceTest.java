@@ -13,7 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springmatutino.BaseTests;
 import br.com.trier.springmatutino.domain.Campeonato;
-import br.com.trier.springmatutino.repositories.CampeonatoRepository;
 import jakarta.transaction.Transactional;
 
 @Transactional

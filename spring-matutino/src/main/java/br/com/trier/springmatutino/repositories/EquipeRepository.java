@@ -10,5 +10,6 @@ import br.com.trier.springmatutino.domain.Equipe;
 @Repository
 public interface EquipeRepository extends JpaRepository<Equipe, Integer> {
 	List<Equipe> findByName(String name);
+
 	List<Equipe> findByNameStartingWithIgnoreCase(String name);
-} 
+}

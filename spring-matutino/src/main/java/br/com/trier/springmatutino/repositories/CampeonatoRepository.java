@@ -10,6 +10,12 @@ import br.com.trier.springmatutino.domain.Campeonato;
 @Repository
 public interface CampeonatoRepository extends JpaRepository<Campeonato, Integer> {
 	List<Campeonato> findByDescricao(String descricao);
+
 	List<Campeonato> findByDescricaoStartingWithIgnoreCase(String descricao);
-	 List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear);
-} 
+
+	List<Campeonato> findByDescricaoStartingWithIgnoreCaseAndAnoEquals(String descricao, Integer ano);
+
+	List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear);
+
+	List<Campeonato> findByAno(Integer ano);
+}

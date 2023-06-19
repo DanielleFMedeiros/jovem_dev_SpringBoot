@@ -15,7 +15,7 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Autowired
 	CampeonatoRepository repository;
-	
+
 	@Override
 	public Campeonato salvar(Campeonato campeonato) {
 		return repository.save(campeonato);
@@ -40,10 +40,10 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	@Override
 	public void delete(Integer id) {
 		Campeonato campeonato = findById(id);
-		if(campeonato != null) {
+		if (campeonato != null) {
 			repository.delete(campeonato);
 		}
-		
+
 	}
 
 	@Override
@@ -58,10 +58,18 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
-		return 	repository.findByAnoBetween(startYear, endYear);
+		return repository.findByAnoBetween(startYear, endYear);
 
-	} 
-	
-	
+	}
+
+	@Override
+	public List<Campeonato> findByDescricaoStartingWithIgnoreCaseAndAnoEquals(String descricao, Integer ano) {
+		return repository.findByDescricaoStartingWithIgnoreCaseAndAnoEquals(descricao, ano);
+	}
+
+	@Override
+	public List<Campeonato> findByAno(Integer ano) {
+		return repository.findByAno(ano);
+	}
 
 }

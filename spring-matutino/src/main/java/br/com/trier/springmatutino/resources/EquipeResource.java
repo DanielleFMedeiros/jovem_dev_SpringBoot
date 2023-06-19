@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.trier.springmatutino.domain.Equipe;
 import br.com.trier.springmatutino.services.EquipeService;
-
+/*
+ * FIXME: buscar por nome de equipe com contains e ignorecase.
+ */
 @RestController
 @RequestMapping(value = "equipes")
 public class EquipeResource {

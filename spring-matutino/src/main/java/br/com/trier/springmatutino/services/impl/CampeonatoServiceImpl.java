@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.trier.springmatutino.domain.Campeonato;
 import br.com.trier.springmatutino.repositories.CampeonatoRepository;
 import br.com.trier.springmatutino.services.CampeonatoService;
+import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 
 @Service
 public class CampeonatoServiceImpl implements CampeonatoService {
@@ -57,7 +58,7 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	@Override
 	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
 		if (!validateYear(startYear) || !validateYear(endYear)) {
-			throw new IllegalArgumentException("Intervalo de anos inválido. O ano deve estar entre 1990 e o ano seguinte.");
+			throw new ViolacaoIntegridade("Intervalo de anos inválido. O ano deve estar entre 1990 e o ano seguinte.");
 		}
 		return repository.findByAnoBetween(startYear, endYear);
 	}

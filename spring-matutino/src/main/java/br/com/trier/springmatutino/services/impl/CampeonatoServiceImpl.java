@@ -55,12 +55,12 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	}
 
 	@Override
-    public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
-        if (!validateYear(startYear) || !validateYear(endYear)) {
-            throw new IllegalArgumentException("Invalid year range. Year must be between 1980 and the next year.");
-        }
-        return repository.findByAnoBetween(startYear, endYear);
-    }
+	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
+		if (!validateYear(startYear) || !validateYear(endYear)) {
+			throw new IllegalArgumentException("Intervalo de anos inválido. O ano deve estar entre 1990 e o ano seguinte.");
+		}
+		return repository.findByAnoBetween(startYear, endYear);
+	}
 
 	@Override
 	public List<Campeonato> findByAno(Integer ano) {
@@ -73,18 +73,10 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	}
 
-
-
-	 @Override
-	    public boolean validateYear(Integer year) {
-	        int currentYear = Year.now().getValue();
-	        return year >= 1980 && year <= currentYear + 1;
-	    }
-
-
-
-
-
-
+	@Override
+	public boolean validateYear(Integer year) {
+		int currentYear = Year.now().getValue();
+		return year >= 1990 && year <= currentYear;
+	}
 
 }

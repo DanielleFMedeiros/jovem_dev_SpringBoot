@@ -35,16 +35,11 @@ public class UserResource {
 		return user != null ? ResponseEntity.ok(user) : ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/name/{name}")
-	public ResponseEntity<List<User>> buscaPorNome(@PathVariable String name) {
-		return ResponseEntity.ok(service.findByName(name));
-	}
-	
 	@GetMapping("/email/{email}")
 	public ResponseEntity<User> buscaPorEmail(@PathVariable String email) {
 		return ResponseEntity.ok(service.findByEmail(email));
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<User>> listarTodos() {
 		List<User> lista = service.listAll();
@@ -57,13 +52,16 @@ public class UserResource {
 		user = service.update(user);
 		return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
 	}
-	
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
 		return ResponseEntity.ok().build();
 	}
-	
-	
+
+	@GetMapping("/name/{name}")
+	public ResponseEntity<List<User>> buscaPorNomeContains(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));
+	}
+
 }

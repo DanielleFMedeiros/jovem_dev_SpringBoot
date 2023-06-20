@@ -18,14 +18,13 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	UserRepository repository;
 
-	private void findByEmail (User obj) {
+	private void findByEmail(User obj) {
 		User user = repository.findByEmail(obj.getEmail());
-		if(user != null && user.getId()!=obj.getId()) {
+		if (user != null && user.getId() != obj.getId()) {
 			throw new ViolacaoIntegridade("E-mail já cadastrado: %s".formatted(obj.getEmail()));
 		}
 	}
-	
-	
+
 	@Override
 	public User salvar(User user) {
 		findByEmail(user);
@@ -35,7 +34,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> listAll() {
 		List<User> lista = repository.findAll();
-		if(lista.size() == 0) {
+		if (lista.size() == 0) {
 			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado");
 		}
 		return lista;
@@ -47,19 +46,16 @@ public class UserServiceImpl implements UserService {
 		return obj.orElseThrow(() -> new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(id)));
 	}
 
-
 	@Override
 	public User update(User user) {
-	    Optional<User> existingUser = repository.findById(user.getId());
-	    if (existingUser.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(user.getId()));
-	    }
-	    findByEmail(user);
-	    return repository.save(user);
+		Optional<User> existingUser = repository.findById(user.getId());
+		if (existingUser.isEmpty()) {
+			throw new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(user.getId()));
+		}
+		findByEmail(user);
+		return repository.save(user);
 	}
 
-
-	
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
@@ -69,7 +65,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> findByName(String name) {
 		List<User> lista = repository.findByNameStartingWithIgnoreCase(name);
-		if(lista.size() == 0) {
+		if (lista.size() == 0) {
 			throw new ObjetoNaoEncontrado("Nenhum nome de usuário começa com o nome " + name);
 		}
 		return lista;
@@ -82,11 +78,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByEmail(String email) {
-	    User user = repository.findByEmail(email);
-	    if (user == null) {
-	        throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
-	    }
-	    return user;
+		User user = repository.findByEmail(email);
+		if (user == null) {
+			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
+		}
+		return user;
 	}
 
 }

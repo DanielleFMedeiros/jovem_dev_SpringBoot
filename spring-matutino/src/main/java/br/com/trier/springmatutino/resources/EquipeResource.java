@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.trier.springmatutino.domain.Equipe;
 import br.com.trier.springmatutino.services.EquipeService;
+
 /*
  * FIXME: buscar por nome de equipe com contains e ignorecase.
  */
@@ -49,18 +50,18 @@ public class EquipeResource {
 		equipe = service.update(equipe);
 		return equipe != null ? ResponseEntity.ok(equipe) : ResponseEntity.badRequest().build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
 		return ResponseEntity.ok().build();
-		
+
 	}
-	
+
 	@GetMapping("/nome/{nome}")
 	public ResponseEntity<List<Equipe>> buscarPorNome(@PathVariable String nome) {
-	    List<Equipe> equipes = service.findByNameStartingWithIgnoreCase(nome);
-	    return equipes.size() > 0 ? ResponseEntity.ok(equipes) : ResponseEntity.noContent().build();
+		List<Equipe> equipes = service.findByNameStartingWithIgnoreCase(nome);
+		return equipes.size() > 0 ? ResponseEntity.ok(equipes) : ResponseEntity.noContent().build();
 	}
 
 }

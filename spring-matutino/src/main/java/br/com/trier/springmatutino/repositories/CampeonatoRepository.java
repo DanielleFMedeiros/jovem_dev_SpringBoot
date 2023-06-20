@@ -13,7 +13,6 @@ public interface CampeonatoRepository extends JpaRepository<Campeonato, Integer>
 
 	List<Campeonato> findByDescricaoStartingWithIgnoreCase(String descricao);
 
-
 	List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear);
 
 	List<Campeonato> findByAno(Integer ano);

@@ -15,7 +15,7 @@ public class PaisServiceImpl implements PaisService {
 
 	@Autowired
 	PaisRepository repository;
-	
+
 	@Override
 	public Pais salvar(Pais pais) {
 		return repository.save(pais);
@@ -39,9 +39,8 @@ public class PaisServiceImpl implements PaisService {
 
 	@Override
 	public void delete(Integer id) {
-	    repository.findById(id).ifPresent(repository::delete);
+		repository.findById(id).ifPresent(repository::delete);
 	}
-
 
 	@Override
 	public List<Pais> findByName(String name) {
@@ -55,10 +54,8 @@ public class PaisServiceImpl implements PaisService {
 
 	@Override
 	public List<Pais> findByNameLike(String name) {
-        return repository.findByNameLike(name);
-
+		return repository.findByNameLike(name);
 
 	}
-
 
 }

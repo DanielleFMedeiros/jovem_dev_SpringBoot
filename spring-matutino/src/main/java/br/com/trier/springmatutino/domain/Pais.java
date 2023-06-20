@@ -10,20 +10,21 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity (name = "pais")
+@Entity(name = "pais")
 public class Pais {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column (name = "id_pais")
+	@Column(name = "id_pais")
 	private Integer id;
-	
-	@Column (name = "nome_pais", unique = true)
+
+	@Column(name = "nome_pais", unique = true)
 	private String name;
-	
+
 }

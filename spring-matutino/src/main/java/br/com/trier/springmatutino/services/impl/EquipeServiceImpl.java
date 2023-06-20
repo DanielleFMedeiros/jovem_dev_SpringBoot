@@ -15,7 +15,7 @@ public class EquipeServiceImpl implements EquipeService {
 
 	@Autowired
 	EquipeRepository repository;
-	
+
 	@Override
 	public Equipe salvar(Equipe equipe) {
 		return repository.save(equipe);
@@ -39,31 +39,28 @@ public class EquipeServiceImpl implements EquipeService {
 
 	@Override
 	public void delete(Integer id) {
-	    repository.findById(id).ifPresent(repository::delete);
+		repository.findById(id).ifPresent(repository::delete);
 	}
-
 
 	@Override
 	public List<Equipe> findByName(String name) {
-		return repository.findByName(name) ;
-	} 
+		return repository.findByName(name);
+	}
 
 	@Override
 	public List<Equipe> findByNameStartingWithIgnoreCase(String name) {
-		return repository.findByNameStartingWithIgnoreCase(name) ;
-	} 
-	
+		return repository.findByNameStartingWithIgnoreCase(name);
+	}
+
 	@Override
 	public List<Equipe> findByNameLike(String name) {
-        return repository.findByNameLike(name);
+		return repository.findByNameLike(name);
 
 	}
-	
+
 	@Override
 	public List<Equipe> findByNameContainingIgnoreCase(String name) {
-	    return repository.findByNameContainingIgnoreCase(name);
+		return repository.findByNameContainingIgnoreCase(name);
 	}
-
-
 
 }

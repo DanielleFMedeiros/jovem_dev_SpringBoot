@@ -23,11 +23,9 @@ public interface CampeonatoService {
 	List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear);
 
 	List<Campeonato> findByAno(Integer ano);
-	
+
 	List<Campeonato> findByDescricaoLike(String descricao);
 
 	boolean validateYear(Integer ano);
 
-
-	
 }

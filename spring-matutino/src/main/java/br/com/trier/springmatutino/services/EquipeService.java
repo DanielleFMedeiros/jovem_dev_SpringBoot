@@ -20,7 +20,7 @@ public interface EquipeService {
 	void delete(Integer id);
 
 	List<Equipe> findByNameLike(String nome);
-	
+
 	List<Equipe> findByNameContainingIgnoreCase(String name);
 
 }

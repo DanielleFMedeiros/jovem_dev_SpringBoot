@@ -15,19 +15,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Entity (name = "campeonato")
+@Entity(name = "campeonato")
 public class Campeonato {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column (name = "id_campeonato")
+	@Column(name = "id_campeonato")
 	@Setter
 	private Integer id;
-	
-	@Column (name = "descricao_campeonato")
+
+	@Column(name = "descricao_campeonato")
 	private String descricao;
-	
-	@Column (name = "ano_campeonato")
+
+	@Column(name = "ano_campeonato")
 	private Integer ano;
-	
+
 }

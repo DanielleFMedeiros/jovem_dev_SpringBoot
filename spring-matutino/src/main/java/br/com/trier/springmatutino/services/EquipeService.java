@@ -9,14 +9,18 @@ public interface EquipeService {
 
 	List<Equipe> listAll();
 
-	List<Equipe> findByName(String name);
+	List<Equipe> findByName(String nome);
 
-	List<Equipe> findByNameStartingWithIgnoreCase(String name);
+	List<Equipe> findByNameStartingWithIgnoreCase(String nome);
 
 	Equipe findById(Integer id);
 
 	Equipe update(Equipe equipe);
 
 	void delete(Integer id);
+
+	List<Equipe> findByNameLike(String nome);
+	
+	List<Equipe> findByNameContainingIgnoreCase(String name);
 
 }

@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.services.PaisService;
 
-/*
- * FIXME: Falta implementar busca por nome like
- */
+
 @RestController
 @RequestMapping(value = "paises")
 public class PaisResource {
@@ -38,6 +36,13 @@ public class PaisResource {
 		return pais != null ? ResponseEntity.ok(pais) : ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<Pais>> buscarPorNome(@PathVariable String name) {
+	    List<Pais> lista = service.findByNameLike(name);
+	    return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+	}
+
+	
 	@GetMapping
 	public ResponseEntity<List<Pais>> listarTodos() {
 		List<Pais> lista = service.listAll();

@@ -45,7 +45,6 @@ public class UserResource {
 		return ResponseEntity.ok(service.findByEmail(email));
 	}
 	
-	
 	@GetMapping
 	public ResponseEntity<List<User>> listarTodos() {
 		List<User> lista = service.listAll();

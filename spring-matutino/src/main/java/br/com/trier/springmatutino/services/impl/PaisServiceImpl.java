@@ -39,12 +39,9 @@ public class PaisServiceImpl implements PaisService {
 
 	@Override
 	public void delete(Integer id) {
-		Pais pais = findById(id);
-		if(pais != null) {
-			repository.delete(pais);
-		}
-		
+	    repository.findById(id).ifPresent(repository::delete);
 	}
+
 
 	@Override
 	public List<Pais> findByName(String name) {
@@ -55,5 +52,13 @@ public class PaisServiceImpl implements PaisService {
 	public List<Pais> findByNameStartingWithIgnoreCase(String name) {
 		return repository.findByNameStartingWithIgnoreCase(name);
 	}
+
+	@Override
+	public List<Pais> findByNameLike(String name) {
+        return repository.findByNameLike(name);
+
+
+	}
+
 
 }

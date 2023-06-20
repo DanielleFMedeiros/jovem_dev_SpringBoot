@@ -91,4 +91,45 @@ public class EquipeServiceTest extends BaseTests {
 		lista = equipeService.findByName("Equipe 4");
 		assertEquals(0, lista.size());
 	}
+	
+	@Test
+	@DisplayName("Teste buscar equipe por nome com LIKE")
+	@Sql({"classpath:/resources/sqls/equipe.sql"})
+	void findEquipeByNameWithLikeTest() {
+	    List<Equipe> lista = equipeService.findByNameLike("%1");
+	    assertEquals(1, lista.size());
+	    assertEquals(1, lista.get(0).getId());
+	    assertEquals("Equipe 1", lista.get(0).getName());
+
+	    lista = equipeService.findByNameLike("%i%");
+	    assertEquals(2, lista.size());
+	    assertEquals(1, lista.get(0).getId());
+	    assertEquals("Equipe 1", lista.get(0).getName());
+	    assertEquals(2, lista.get(1).getId());
+	    assertEquals("Equipe 2", lista.get(1).getName());
+
+	    lista = equipeService.findByNameLike("XXX%");
+	    assertEquals(0, lista.size());
+	}
+	
+	@Test
+	@DisplayName("Teste buscar equipe por nome contendo (ignorando caso)")
+	@Sql({ "classpath:/resources/sqls/equipe.sql" })
+	void testFindByNameContainingIgnoreCase() {
+	    List<Equipe> lista = equipeService.findByNameContainingIgnoreCase("equipe");
+	    assertEquals(2, lista.size());
+	    assertEquals(1, lista.get(0).getId());
+	    assertEquals("Equipe 1", lista.get(0).getName());
+	    assertEquals(2, lista.get(1).getId());
+	    assertEquals("Equipe 2", lista.get(1).getName());
+
+	    lista = equipeService.findByNameContainingIgnoreCase("1");
+	    assertEquals(1, lista.size());
+	    assertEquals(1, lista.get(0).getId());
+	    assertEquals("Equipe 1", lista.get(0).getName());
+
+	    lista = equipeService.findByNameContainingIgnoreCase("x");
+	    assertEquals(0, lista.size());
+	}
+
 }

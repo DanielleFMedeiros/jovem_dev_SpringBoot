@@ -1,6 +1,7 @@
 package br.com.trier.springmatutino.services;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import br.com.trier.springmatutino.domain.Campeonato;
 
@@ -20,9 +21,13 @@ public interface CampeonatoService {
 	List<Campeonato> findByDescricaoStartingWithIgnoreCase(String descricao);
 
 	List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear);
-	
-	List<Campeonato> findByDescricaoStartingWithIgnoreCaseAndAnoEquals(String descricao, Integer ano);
 
 	List<Campeonato> findByAno(Integer ano);
+	
+	List<Campeonato> findByDescricaoLike(String descricao);
+
+	boolean validateYear(Integer ano);
+
+
 	
 }

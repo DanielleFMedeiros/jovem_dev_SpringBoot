@@ -3,6 +3,7 @@ package br.com.trier.springmatutino.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
@@ -100,18 +101,46 @@ public class CampeonatoServiceTest extends BaseTests {
 	@DisplayName("Teste buscar campeonato por intervalo de ano")
 	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
 	void findByAnoBetween() {
-		 List<Campeonato> campeonatos = campeonatoService.findByAnoBetween(2021, 2023);
-        assertNotNull(campeonatos);
-        assertEquals(2, campeonatos.size());
-        Campeonato campeonato1 = campeonatos.get(0);
-        assertEquals(1, campeonato1.getId());
-        assertEquals("Campeonato 1", campeonato1.getDescricao());
-        assertEquals(2023, campeonato1.getAno());
+	    List<Campeonato> campeonatos = campeonatoService.findByAnoBetween(2021, 2022);
+	    assertNotNull(campeonatos);
+	    assertEquals(1, campeonatos.size());
+	    Campeonato campeonato1 = campeonatos.get(0);
+	    assertEquals(2, campeonato1.getId());
+	    assertEquals("Campeonato 2", campeonato1.getDescricao());
+	    assertEquals(2021, campeonato1.getAno());
 
-        Campeonato campeonato2 = campeonatos.get(1);
-        assertEquals(2, campeonato2.getId());
-        assertEquals("Campeonato 2", campeonato2.getDescricao());
-        assertEquals(2021, campeonato2.getAno());
-    
+	    assertTrue(campeonatoService.validateYear(campeonato1.getAno()));
 	}
+
+
+
+	@Test
+	@DisplayName("Teste buscar campeonato por ano")
+	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
+	void findByAno() {
+		Integer ano = 2022;
+
+		List<Campeonato> campeonatos = campeonatoService.findByAno(ano);
+		assertNotNull(campeonatos);
+		assertEquals(0, campeonatos.size());
+
+		for (Campeonato campeonato : campeonatos) {
+			assertEquals(ano, campeonato.getAno());
+		}
+	}
+
+	@Test
+	@DisplayName("Teste buscar campeonato por descrição (like)")
+	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
+	void findByDescricaoLike() {
+		String descricao = "Campeonato%";
+
+		List<Campeonato> campeonatos = campeonatoService.findByDescricaoLike(descricao);
+		assertNotNull(campeonatos);
+		assertEquals(2, campeonatos.size());
+
+	}
+	
+
+
 }

@@ -39,12 +39,9 @@ public class EquipeServiceImpl implements EquipeService {
 
 	@Override
 	public void delete(Integer id) {
-		Equipe equipe = findById(id);
-		if(equipe != null) {
-			repository.delete(equipe);
-		}
-		
+	    repository.findById(id).ifPresent(repository::delete);
 	}
+
 
 	@Override
 	public List<Equipe> findByName(String name) {
@@ -55,5 +52,18 @@ public class EquipeServiceImpl implements EquipeService {
 	public List<Equipe> findByNameStartingWithIgnoreCase(String name) {
 		return repository.findByNameStartingWithIgnoreCase(name) ;
 	} 
+	
+	@Override
+	public List<Equipe> findByNameLike(String name) {
+        return repository.findByNameLike(name);
+
+	}
+	
+	@Override
+	public List<Equipe> findByNameContainingIgnoreCase(String name) {
+	    return repository.findByNameContainingIgnoreCase(name);
+	}
+
+
 
 }

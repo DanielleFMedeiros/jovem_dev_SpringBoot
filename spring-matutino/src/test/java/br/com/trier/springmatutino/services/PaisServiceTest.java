@@ -91,4 +91,28 @@ public class PaisServiceTest extends BaseTests{
 		lista = paisService.findByName("França");
 		assertEquals(0, lista.size());
 	}
+	
+	@Test
+	@DisplayName("Teste buscar país por nome com LIKE")
+	@Sql({"classpath:/resources/sqls/pais.sql"})
+	void findPaisByNameWithLikeTest() {
+	    List<Pais> lista = paisService.findByNameLike("Bra%");
+	    assertEquals(1, lista.size());
+
+	    lista = paisService.findByNameLike("%in%");
+	    assertEquals(1, lista.size());
+	    assertEquals(3, lista.get(0).getId());
+	    assertEquals("Argentina", lista.get(0).getName());
+
+	    lista = paisService.findByNameLike("%i%");
+	    assertEquals(2, lista.size());
+	    assertEquals(3, lista.get(0).getId());
+	    assertEquals("Argentina", lista.get(0).getName());
+	    assertEquals(1, lista.get(1).getId());
+	    assertEquals("Brasil", lista.get(1).getName());
+
+	    lista = paisService.findByNameLike("XXX%");
+	    assertEquals(0, lista.size());
+	}
+
 }

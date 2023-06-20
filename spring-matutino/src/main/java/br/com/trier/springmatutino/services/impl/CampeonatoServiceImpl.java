@@ -1,7 +1,9 @@
 package br.com.trier.springmatutino.services.impl;
 
+import java.time.Year;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,11 +41,7 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public void delete(Integer id) {
-		Campeonato campeonato = findById(id);
-		if (campeonato != null) {
-			repository.delete(campeonato);
-		}
-
+		repository.findById(id).ifPresent(repository::delete);
 	}
 
 	@Override
@@ -57,19 +55,36 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	}
 
 	@Override
-	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
-		return repository.findByAnoBetween(startYear, endYear);
-
-	}
-
-	@Override
-	public List<Campeonato> findByDescricaoStartingWithIgnoreCaseAndAnoEquals(String descricao, Integer ano) {
-		return repository.findByDescricaoStartingWithIgnoreCaseAndAnoEquals(descricao, ano);
-	}
+    public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
+        if (!validateYear(startYear) || !validateYear(endYear)) {
+            throw new IllegalArgumentException("Invalid year range. Year must be between 1980 and the next year.");
+        }
+        return repository.findByAnoBetween(startYear, endYear);
+    }
 
 	@Override
 	public List<Campeonato> findByAno(Integer ano) {
 		return repository.findByAno(ano);
 	}
+
+	@Override
+	public List<Campeonato> findByDescricaoLike(String descricao) {
+		return repository.findByDescricaoLike(descricao);
+
+	}
+
+
+
+	 @Override
+	    public boolean validateYear(Integer year) {
+	        int currentYear = Year.now().getValue();
+	        return year >= 1980 && year <= currentYear + 1;
+	    }
+
+
+
+
+
+
 
 }

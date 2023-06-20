@@ -19,4 +19,6 @@ public interface PaisService {
 
 	void delete(Integer id);
 
+	List<Pais> findByNameLike(String name);
+
 }

@@ -54,5 +54,13 @@ public class EquipeResource {
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
 		return ResponseEntity.ok().build();
+		
 	}
+	
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<Equipe>> buscarPorNome(@PathVariable String nome) {
+	    List<Equipe> equipes = service.findByNameStartingWithIgnoreCase(nome);
+	    return equipes.size() > 0 ? ResponseEntity.ok(equipes) : ResponseEntity.noContent().build();
+	}
+
 }

@@ -7,7 +7,7 @@ import br.com.trier.springmatutino.domain.User;
 public interface UserService {
 	User salvar(User user);
 
-	List<User> listAll();
+	List<User>listAll();
 
 	User findById(Integer id);
 
@@ -20,6 +20,7 @@ public interface UserService {
 	List<User> findByNameStartingWithIgnoreCase(String name);
 
 	User findByEmail(String email);
+
 
 	
 }

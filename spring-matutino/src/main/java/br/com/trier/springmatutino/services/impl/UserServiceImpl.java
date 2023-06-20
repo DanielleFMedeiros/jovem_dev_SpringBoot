@@ -34,10 +34,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> listAll() {
-		return repository.findAll();
-		/*
-		 * FIXME: lançar exceção 
-		 */
+		List<User> lista = repository.findAll();
+		if(lista.size() == 0) {
+			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado");
+		}
+		return lista;
 	}
 
 	@Override
@@ -46,12 +47,19 @@ public class UserServiceImpl implements UserService {
 		return obj.orElseThrow(() -> new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(id)));
 	}
 
+
 	@Override
 	public User update(User user) {
-		findByEmail(user);
-		return repository.save(user);
+	    Optional<User> existingUser = repository.findById(user.getId());
+	    if (existingUser.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("Usuário %s não encontrado".formatted(user.getId()));
+	    }
+	    findByEmail(user);
+	    return repository.save(user);
 	}
 
+
+	
 	@Override
 	public void delete(Integer id) {
 		User user = findById(id);
@@ -74,10 +82,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User findByEmail(String email) {
-		User user = repository.findByEmail(email);
-		if(!user.getEmail().contains(email)) {
-			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
-		}
-		return user;
+	    User user = repository.findByEmail(email);
+	    if (user == null) {
+	        throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
+	    }
+	    return user;
 	}
+
 }

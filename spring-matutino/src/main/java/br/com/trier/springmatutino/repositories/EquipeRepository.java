@@ -12,4 +12,8 @@ public interface EquipeRepository extends JpaRepository<Equipe, Integer> {
 	List<Equipe> findByName(String name);
 
 	List<Equipe> findByNameStartingWithIgnoreCase(String name);
+
+	List<Equipe> findByNameLike(String name);
+
+	List<Equipe> findByNameContainingIgnoreCase(String name);
 }

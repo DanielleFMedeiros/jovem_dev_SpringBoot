@@ -3,7 +3,6 @@ package br.com.trier.springmatutino.services.impl;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,14 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	@Autowired
 	CampeonatoRepository repository;
 
+	private void validaCampeonato(Campeonato campeonato) {
+		if(campeonato == null) {
+			throw new ViolacaoIntegridade("Campeonato Nulo");
+		}
+		if(campeonato.getDescricao() == null || campeonato.getDescricao().equals("")) {
+			throw new ViolacaoIntegridade("Descrição obrigatória");
+		}
+	}
 	@Override
 	public Campeonato salvar(Campeonato campeonato) {
 		return repository.save(campeonato);

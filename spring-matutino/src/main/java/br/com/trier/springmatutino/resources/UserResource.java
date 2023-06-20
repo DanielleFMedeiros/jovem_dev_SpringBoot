@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.trier.springmatutino.domain.User;
+import br.com.trier.springmatutino.domain.dto.UserDTO;
 import br.com.trier.springmatutino.services.UserService;
 
 @RestController
@@ -24,15 +25,20 @@ public class UserResource {
 	private UserService service;
 
 	@PostMapping
+	
+	/*
+	 * FIXME: retirar os if else, tratar
+	 */
 	public ResponseEntity<User> insert(@RequestBody User user) {
+		
 		User newUser = service.salvar(user);
 		return newUser != null ? ResponseEntity.ok(newUser) : ResponseEntity.badRequest().build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<User> buscaPorCodigo(@PathVariable Integer id) {
+	public ResponseEntity<UserDTO> buscaPorCodigo(@PathVariable Integer id) {
 		User user = service.findById(id);
-		return user != null ? ResponseEntity.ok(user) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(user.toDto());
 	}
 
 	@GetMapping("/email/{email}")
@@ -41,16 +47,25 @@ public class UserResource {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> listarTodos() {
+	public ResponseEntity<List<UserDTO>> listarTodos() {
 		List<User> lista = service.listAll();
-		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		//return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		
+//		return ResponseEntity.ok(lista.stream()
+//				.map((user)-> user.toDto())
+//				.toList());
+		
+		return ResponseEntity.ok(service.listAll().stream()
+				.map((user)-> user.toDto())
+				.toList());
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<User> update(@PathVariable Integer id, @RequestBody User user) {
+	public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+		User user = new User(userDTO);
 		user.setId(id);
 		user = service.update(user);
-		return user != null ? ResponseEntity.ok(user) : ResponseEntity.badRequest().build();
+		return user != null ? ResponseEntity.ok(user.toDto()) : ResponseEntity.badRequest().build();
 	}
 
 	@DeleteMapping("/{id}")
@@ -60,8 +75,10 @@ public class UserResource {
 	}
 
 	@GetMapping("/name/{name}")
-	public ResponseEntity<List<User>> buscaPorNomeContains(@PathVariable String name) {
-		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name));
+	public ResponseEntity<List<UserDTO>> buscaPorNomeContains(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name).stream()
+				.map((user)-> user.toDto())
+				.toList());
 	}
 
 }

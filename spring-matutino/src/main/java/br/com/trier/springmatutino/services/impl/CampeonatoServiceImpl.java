@@ -76,7 +76,7 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	@Override
 	public boolean validateYear(Integer year) {
 		int currentYear = Year.now().getValue();
-		return year >= 1990 && year <= currentYear;
+		return year >= 1990 || year <= currentYear + 1;
 	}
 
 }

@@ -81,45 +81,80 @@ public class UserResourceTest {
 //	@DisplayName("Buscar por nome")
 //	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 //	public void testGetNameOk() {
-//		ResponseEntity<UserDTO> response = getUser("/usuarios/Usuario teste 1");
+//		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios/Usuario teste 1");
 //		assertEquals(response.getStatusCode(), HttpStatus.OK);
-//		UserDTO user = response.getBody();
-//		assertEquals("1", user.getId());
-//		assertEquals("teste1@teste.com.br", user.getEmail());
+//		List<UserDTO> userList = response.getBody();
+//		assertEquals(2, userList.size());
+//		UserDTO user = userList.get(0);
+//	    assertEquals(1, user.getId());
+//	    assertEquals("teste1@teste.com.br", user.getEmail());
+//	    
 //	}
 
 	@Test
-	@DisplayName("Listar todos")
+	@DisplayName("Buscar por nome")
 	@Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
-	public void testGetListAllOk() {
-		ResponseEntity<UserDTO> response = getUser("/usuarios");
+	public void testGetNameOk() {
+		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios/name/Usuario teste 1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
-		UserDTO user = response.getBody();
-		assertEquals("1", user.getId());
-		assertEquals("Usuario teste 1", user.getName());
-		assertEquals("teste1@teste.com.br", user.getEmail());
-		assertEquals("2", user.getId());
-		assertEquals("Usuario teste 2", user.getName());
-		assertEquals("teste2@teste.com.br", user.getEmail());
+		List<UserDTO> userList = response.getBody();
 
-		
+		assertEquals(1, userList.size());
+
+		UserDTO user = userList.get(0);
+		assertEquals(1, user.getId());
+		assertEquals("teste1@teste.com.br", user.getEmail());
+	}
+
+	@Test
+	@DisplayName("Listar todos os usuários cadastrados")
+	public void testGetListAllOk() {
+		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios");
+		assertEquals(response.getStatusCode(), HttpStatus.OK);
+		List<UserDTO> userList = response.getBody();
+
+		assertEquals(2, userList.size());
+
+		UserDTO user1 = userList.get(0);
+		assertEquals(1, user1.getId());
+		assertEquals("Usuario teste 1", user1.getName());
+		assertEquals("teste1@teste.com.br", user1.getEmail());
+
+		UserDTO user2 = userList.get(1);
+		assertEquals(2, user2.getId());
+		assertEquals("Usuario teste 2", user2.getName());
+		assertEquals("teste2@teste.com.br", user2.getEmail());
 	}
 
 	@Test
 	@DisplayName("Buscar usuários por nome contendo")
 	public void testGetUsersByNameContaining() {
-	    ResponseEntity<List<UserDTO>> responseEntity = rest.exchange(
-	            "/usuarios/name/Usuario teste 1",
-	            HttpMethod.GET,
-	            null,
-	            new ParameterizedTypeReference<List<UserDTO>>() {}
-	    );
+	    String searchText = "Usuario teste 1";
+
+	    // Constrói a URL com o parâmetro de busca
+	    String url = "/usuarios/name?contains=@Usuario teste 1" + searchText;
+
+	    // Faz a requisição GET
+	    ResponseEntity<List<UserDTO>> responseEntity = rest.exchange(url, HttpMethod.GET,
+	            null, new ParameterizedTypeReference<List<UserDTO>>() {});
+
+	    // Verifica o status da resposta
 	    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+	    // Obtém a lista de usuários da resposta
 	    List<UserDTO> users = responseEntity.getBody();
+
+	    // Verifica se a lista não é nula
 	    assertNotNull(users);
-	    
 
+	    // Verifica o tamanho da lista
+	    assertEquals(2, users.size());
 
-	// para cada funcionalidade do resource se faz os testes
+	    UserDTO user1 = users.get(0);
+	    assertEquals(1, user1.getId());
+	    assertEquals("Usuario teste 1", user1.getName());
+	    assertEquals("teste1@teste.com.br", user1.getEmail());
 	}
+
+
 }

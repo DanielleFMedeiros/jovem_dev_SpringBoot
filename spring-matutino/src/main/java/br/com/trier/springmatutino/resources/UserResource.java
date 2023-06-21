@@ -76,6 +76,7 @@ public class UserResource {
 
 	@GetMapping("/name/{name}")
 	public ResponseEntity<List<UserDTO>> buscaPorNomeContains(@PathVariable String name) {
+		List<User> lista = service.findByNameStartingWithIgnoreCase(name);
 		return ResponseEntity.ok(service.findByNameStartingWithIgnoreCase(name).stream()
 				.map((user)-> user.toDto())
 				.toList());

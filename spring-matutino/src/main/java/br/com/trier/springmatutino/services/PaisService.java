@@ -9,8 +9,6 @@ public interface PaisService {
 
 	List<Pais> listAll();
 
-	List<Pais> findByName(String name);
-
 	List<Pais> findByNameStartingWithIgnoreCase(String name);
 
 	Pais findById(Integer id);

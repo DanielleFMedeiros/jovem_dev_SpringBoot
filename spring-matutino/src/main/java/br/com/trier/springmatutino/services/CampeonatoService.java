@@ -1,7 +1,6 @@
 package br.com.trier.springmatutino.services;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import br.com.trier.springmatutino.domain.Campeonato;
 

@@ -9,8 +9,6 @@ public interface EquipeService {
 
 	List<Equipe> listAll();
 
-	List<Equipe> findByName(String nome);
-
 	List<Equipe> findByNameStartingWithIgnoreCase(String nome);
 
 	Equipe findById(Integer id);
@@ -21,6 +19,6 @@ public interface EquipeService {
 
 	List<Equipe> findByNameLike(String nome);
 
-	List<Equipe> findByNameContainingIgnoreCase(String name);
+	List<Equipe> findByNameContainingIgnoreCase(String nome);
 
 }

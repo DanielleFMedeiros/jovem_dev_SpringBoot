@@ -42,10 +42,6 @@ public class EquipeServiceImpl implements EquipeService {
 		repository.findById(id).ifPresent(repository::delete);
 	}
 
-	@Override
-	public List<Equipe> findByName(String name) {
-		return repository.findByName(name);
-	}
 
 	@Override
 	public List<Equipe> findByNameStartingWithIgnoreCase(String name) {

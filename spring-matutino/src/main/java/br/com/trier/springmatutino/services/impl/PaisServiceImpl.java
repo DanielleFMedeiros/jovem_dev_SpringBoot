@@ -42,10 +42,6 @@ public class PaisServiceImpl implements PaisService {
 		repository.findById(id).ifPresent(repository::delete);
 	}
 
-	@Override
-	public List<Pais> findByName(String name) {
-		return repository.findByName(name);
-	}
 
 	@Override
 	public List<Pais> findByNameStartingWithIgnoreCase(String name) {

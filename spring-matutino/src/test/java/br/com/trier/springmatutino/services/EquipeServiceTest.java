@@ -84,12 +84,9 @@ public class EquipeServiceTest extends BaseTests {
 	@DisplayName("Teste buscar equipe por nome que inicia com")
 	@Sql({ "classpath:/resources/sqls/equipe.sql" })
 	void findEquipeByNameStartsWithTest() {
-		List<Equipe> lista = equipeService.findByName("Equipe 2");
-		assertEquals(1, lista.size());
-		lista = equipeService.findByNameStartingWithIgnoreCase("e");
+		List<Equipe> lista = equipeService.findByNameStartingWithIgnoreCase("e");
 		assertEquals(2, lista.size());
-		lista = equipeService.findByName("Equipe 4");
-		assertEquals(0, lista.size());
+
 	}
 
 	@Test

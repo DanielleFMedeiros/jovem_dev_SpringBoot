@@ -10,31 +10,43 @@ import org.springframework.stereotype.Service;
 import br.com.trier.springmatutino.domain.Campeonato;
 import br.com.trier.springmatutino.repositories.CampeonatoRepository;
 import br.com.trier.springmatutino.services.CampeonatoService;
+import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
 import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 
 @Service
 public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Autowired
-	CampeonatoRepository repository;
+	private CampeonatoRepository repository;
 
 	private void validaCampeonato(Campeonato campeonato) {
-		if(campeonato == null) {
-			throw new ViolacaoIntegridade("Campeonato Nulo");
-		}
-		if(campeonato.getDescricao() == null || campeonato.getDescricao().equals("")) {
-			throw new ViolacaoIntegridade("Descrição obrigatória");
-		}
+	    if (campeonato == null) {
+	        throw new ViolacaoIntegridade("Campeonato nulo");
+	    }
+	    if (campeonato.getDescricao() == null || campeonato.getDescricao().isEmpty()) {
+	        throw new ViolacaoIntegridade("A descrição está vazia");
+	    }
+	    int anoAtual = Year.now().getValue();
+	    if (campeonato.getAno() == null || campeonato.getAno() <= 1990 || campeonato.getAno() >= anoAtual + 1) {
+	        throw new ViolacaoIntegridade("O ano precisa ser maior ou igual a 1990 e menor ou igual a "+ anoAtual);
+	    }
 	}
+
 	@Override
 	public Campeonato salvar(Campeonato campeonato) {
+		validaCampeonato(campeonato);
 		return repository.save(campeonato);
 	}
 
 	@Override
 	public List<Campeonato> listAll() {
-		return repository.findAll();
+	    List<Campeonato> campeonatos = repository.findAll();
+	    if (campeonatos.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("Não há campeonatos cadastrados");
+	    }
+	    return campeonatos;
 	}
+
 
 	@Override
 	public Campeonato findById(Integer id) {
@@ -44,12 +56,13 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public Campeonato update(Campeonato campeonato) {
+		validaCampeonato(campeonato);
 		return repository.save(campeonato);
 	}
 
 	@Override
 	public void delete(Integer id) {
-		repository.findById(id).ifPresent(repository::delete);
+		repository.deleteById(id);
 	}
 
 	@Override
@@ -65,7 +78,7 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	@Override
 	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
 		if (!validateYear(startYear) || !validateYear(endYear)) {
-			throw new ViolacaoIntegridade("Intervalo de anos inválido. O ano deve estar entre 1990 e o ano seguinte.");
+			throw new ViolacaoIntegridade("O ano precisa ser maior que 1990 e menor que 2023");
 		}
 		return repository.findByAnoBetween(startYear, endYear);
 	}
@@ -74,17 +87,18 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	public List<Campeonato> findByAno(Integer ano) {
 		return repository.findByAno(ano);
 	}
-
+//terminar
 	@Override
 	public List<Campeonato> findByDescricaoLike(String descricao) {
+		if (campeonato.getDescricao() == null || campeonato.getDescricao().isEmpty()) {
+	        throw new ViolacaoIntegridade("A descrição está vazia");
+	    }
 		return repository.findByDescricaoLike(descricao);
-
 	}
 
 	@Override
 	public boolean validateYear(Integer year) {
 		int currentYear = Year.now().getValue();
-		return year >= 1990 || year <= currentYear + 1;
+		return year >= 1990 && year <= currentYear + 1;
 	}
-
 }

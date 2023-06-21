@@ -28,27 +28,22 @@ public class EquipeResource {
 
 	@PostMapping
 	public ResponseEntity<Equipe> insert(@RequestBody Equipe equipe) {
-		Equipe newEquipe = service.salvar(equipe);
-		return newEquipe != null ? ResponseEntity.ok(newEquipe) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(service.salvar(equipe));
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Equipe> buscaPorCodigo(@PathVariable Integer id) {
-		Equipe equipe = service.findById(id);
-		return equipe != null ? ResponseEntity.ok(equipe) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.findById(id));
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Equipe>> listarTodos() {
-		List<Equipe> lista = service.listAll();
-		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.listAll());
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Equipe> update(@PathVariable Integer id, @RequestBody Equipe equipe) {
-		equipe.setId(id);
-		equipe = service.update(equipe);
-		return equipe != null ? ResponseEntity.ok(equipe) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(service.update(equipe));
 	}
 
 	@DeleteMapping("/{id}")
@@ -60,8 +55,12 @@ public class EquipeResource {
 
 	@GetMapping("/nome/{nome}")
 	public ResponseEntity<List<Equipe>> buscarPorNome(@PathVariable String nome) {
-		List<Equipe> equipes = service.findByNameStartingWithIgnoreCase(nome);
-		return equipes.size() > 0 ? ResponseEntity.ok(equipes) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.findByNameLike(nome));
+	}
+	
+	@GetMapping("/like/{nome}")
+	public ResponseEntity<List<Equipe>> findByNameContainingIgnoreCase(@PathVariable String nome){
+		return ResponseEntity.ok(service.findByNameContainingIgnoreCase(nome));
 	}
 
 }

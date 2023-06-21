@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.trier.springmatutino.domain.Equipe;
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.services.PaisService;
 
@@ -25,38 +26,32 @@ public class PaisResource {
 
 	@PostMapping
 	public ResponseEntity<Pais> insert(@RequestBody Pais pais) {
-		Pais newPais = service.salvar(pais);
-		return newPais != null ? ResponseEntity.ok(newPais) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(service.salvar(pais));
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Pais> buscaPorCodigo(@PathVariable Integer id) {
-		Pais pais = service.findById(id);
-		return pais != null ? ResponseEntity.ok(pais) : ResponseEntity.noContent().build();
-	}
-
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Pais>> buscarPorNome(@PathVariable String name) {
-		List<Pais> lista = service.findByNameLike(name);
-		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.findById(id));
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Pais>> listarTodos() {
-		List<Pais> lista = service.listAll();
-		return lista.size() > 0 ? ResponseEntity.ok(lista) : ResponseEntity.noContent().build();
+		return ResponseEntity.ok(service.listAll());
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Pais> update(@PathVariable Integer id, @RequestBody Pais pais) {
-		pais.setId(id);
-		pais = service.update(pais);
-		return pais != null ? ResponseEntity.ok(pais) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(service.update(pais));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		service.delete(id);
 		return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/nome/{nome}")
+	public ResponseEntity<List<Pais>> buscarPorNome(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameLike(name));
 	}
 }

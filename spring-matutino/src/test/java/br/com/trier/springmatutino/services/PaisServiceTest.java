@@ -84,12 +84,9 @@ public class PaisServiceTest extends BaseTests {
 	@DisplayName("Teste buscar país por nome que inicia com")
 	@Sql({ "classpath:/resources/sqls/pais.sql" })
 	void findPaisByNameStartsWithTest() {
-		List<Pais> lista = paisService.findByName("u");
-		assertEquals(0, lista.size());
-		lista = paisService.findByNameStartingWithIgnoreCase("Argentina");
+		List<Pais> lista = paisService.findByNameStartingWithIgnoreCase("Argentina");
 		assertEquals(1, lista.size());
-		lista = paisService.findByName("França");
-		assertEquals(0, lista.size());
+
 	}
 
 	@Test

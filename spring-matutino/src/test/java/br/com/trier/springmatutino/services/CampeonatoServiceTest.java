@@ -15,6 +15,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import br.com.trier.springmatutino.BaseTests;
 import br.com.trier.springmatutino.domain.Campeonato;
+import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
+import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -43,6 +45,13 @@ public class CampeonatoServiceTest extends BaseTests {
 	}
 
 	@Test
+	@DisplayName("Teste listar todos os campeonatos lista vazia")
+	void listAllEmptyTest() {
+		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.listAll());
+		assertEquals("Não há campeonatos cadastrados", exception.getMessage());
+	}
+	
+	@Test
 	@DisplayName("Teste incluir campeonato")
 	void insertCampeonatoTest() {
 		var campeonato = new Campeonato(null, "Campeonato 8", 2021);
@@ -52,6 +61,18 @@ public class CampeonatoServiceTest extends BaseTests {
 		assertEquals(1, campeonato.getId());
 		assertEquals("Campeonato 8", campeonato.getDescricao());
 		assertEquals(2021, campeonato.getAno());
+	}
+	
+	@Test
+	@DisplayName("Teste incluir campeonato inválido")
+	void insertCampeonatoInvalidoTest() {
+		var campeonato = new Campeonato(null, "Campeonato 8", 2024);
+		var exception = assertThrows(ViolacaoIntegridade.class, () -> campeonatoService.salvar(campeonato));
+		assertEquals("O ano precisa ser maior ou igual a 1990 e menor ou igual a 2023", exception.getMessage());
+		
+		var campeonato2 = new Campeonato(null, "", null);
+		var exception2 = assertThrows(ViolacaoIntegridade.class, () -> campeonatoService.salvar(campeonato2));
+		assertEquals("A descrição está vazia", exception2.getMessage());
 	}
 
 	@Test
@@ -139,5 +160,14 @@ public class CampeonatoServiceTest extends BaseTests {
 		assertEquals(2, campeonatos.size());
 
 	}
+	
+	@Test
+    @DisplayName("Teste buscar campeonato por descrição inválida (like)")
+    @Sql({ "classpath:/resources/sqls/campeonato.sql" })
+    void findByDescricaoLikeInvalid() {
+        String descricao = "CampeonatoXYZ%";
+
+        assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByDescricaoLike(descricao));
+    }
 
 }

@@ -2,7 +2,6 @@ package br.com.trier.springmatutino.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 
@@ -22,14 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.web.client.RestTemplate;
 
 import br.com.trier.springmatutino.SpringMatutinoApplication;
-import br.com.trier.springmatutino.domain.Campeonato;
 import br.com.trier.springmatutino.domain.User;
 import br.com.trier.springmatutino.domain.dto.UserDTO;
-import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
-import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 
 @ActiveProfiles("test")
 @AutoConfigureTestDatabase(replace = Replace.ANY)

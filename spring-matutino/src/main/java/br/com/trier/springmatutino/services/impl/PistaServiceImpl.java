@@ -20,8 +20,9 @@ public class PistaServiceImpl implements PistaService {
 	private PistaRepository repository;
 
 	private void validarPista(Pista pista) {
-
-		if (pista.getTamanho() == null || pista.getTamanho() <= 0) {
+		if(pista == null) {
+			throw new ViolacaoIntegridade("A pista está nula");
+		} else if(pista.getTamanho() == null || pista.getTamanho() <= 0) {
 			throw new ViolacaoIntegridade("Tamanho inválido");
 		}
 	}
@@ -67,19 +68,19 @@ public class PistaServiceImpl implements PistaService {
 	public List<Pista> findByTamanhoBetween(Integer tamInicial, Integer tamFinal) {
 		List<Pista> lista = repository.findByTamanhoBetween(tamInicial,tamFinal);
 		if(lista.size() == 0) {
-			throw new ObjetoNaoEncontrado("Nenhuma pista com os tamanhos  cadastrada");
-			
+			throw new ObjetoNaoEncontrado("Nenhuma pista encontrada com os tamanhos %s e %s cadastrada".formatted(tamInicial, tamFinal));
+
 		}
 		return lista;
 	}
 
 	@Override
 	public List<Pista> findByPaisOrderByTamanhoDesc(Pais pais) {
-	    List<Pista> lista = repository.findByPaisOrderByTamanhoDesc(pais);
-	    if(lista.size() == 0) {
-	        throw new ObjetoNaoEncontrado("Nenhuma pista no país %s".formatted(pais.getName()));
-	    }
-	    return lista;
+		List<Pista> lista = repository.findByPaisOrderByTamanhoDesc(pais);
+		if(lista.size() == 0) {
+			throw new ObjetoNaoEncontrado("Não há pistas desse pais");
+		}
+		return lista;
 	}
 
 

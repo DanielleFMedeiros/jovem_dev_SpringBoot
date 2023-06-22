@@ -12,14 +12,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity(name = "pista")
 public class Pista {
+
 	@Id
+	@Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id_pista")
 	private Integer id;

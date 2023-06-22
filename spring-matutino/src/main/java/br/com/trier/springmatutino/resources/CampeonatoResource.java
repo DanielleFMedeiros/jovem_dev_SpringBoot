@@ -55,10 +55,10 @@ public class CampeonatoResource {
 	}
 
 	@GetMapping("/descricao/{descricao}")
-	public ResponseEntity<List<Campeonato>> findByDescricaoStartingIgnoreCase(@RequestBody String descricao) {
-		return ResponseEntity.ok(service.findByDescricaoStartingWithIgnoreCase(descricao));
-	
+	public ResponseEntity<List<Campeonato>> findByDescricaoStartingIgnoreCase(@PathVariable String descricao) {
+	    return ResponseEntity.ok(service.findByDescricaoStartingWithIgnoreCase(descricao));
 	}
+
 
 	@GetMapping("/anos/{startYear}/{endYear}")
 	public ResponseEntity<Object> findByAnoBetween(@PathVariable Integer startYear, @PathVariable Integer endYear) {

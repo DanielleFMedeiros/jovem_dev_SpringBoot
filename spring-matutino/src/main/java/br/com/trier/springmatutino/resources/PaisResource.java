@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.trier.springmatutino.domain.Equipe;
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.services.PaisService;
 
@@ -41,7 +40,9 @@ public class PaisResource {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Pais> update(@PathVariable Integer id, @RequestBody Pais pais) {
+		pais.setId(id);
 		return ResponseEntity.ok(service.update(pais));
+
 	}
 
 	@DeleteMapping("/{id}")
@@ -50,7 +51,7 @@ public class PaisResource {
 		return ResponseEntity.ok().build();
 	}
 	
-	@GetMapping("/nome/{nome}")
+	@GetMapping("/name/{name}")
 	public ResponseEntity<List<Pais>> buscarPorNome(@PathVariable String name) {
 		return ResponseEntity.ok(service.findByNameLike(name));
 	}

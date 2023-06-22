@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.trier.springmatutino.domain.Equipe;
 import br.com.trier.springmatutino.services.EquipeService;
 
-/*
- * FIXME: buscar por nome de equipe com contains e ignorecase.
- */
 @RestController
 @RequestMapping(value = "equipes")
 public class EquipeResource {
@@ -53,14 +50,14 @@ public class EquipeResource {
 
 	}
 
-	@GetMapping("/nome/{nome}")
-	public ResponseEntity<List<Equipe>> buscarPorNome(@PathVariable String nome) {
-		return ResponseEntity.ok(service.findByNameLike(nome));
+	@GetMapping("/name/{name}")
+	public ResponseEntity<List<Equipe>> buscarPorNome(@PathVariable String name) {
+		return ResponseEntity.ok(service.findByNameLike(name));
 	}
 	
-	@GetMapping("/like/{nome}")
-	public ResponseEntity<List<Equipe>> findByNameContainingIgnoreCase(@PathVariable String nome){
-		return ResponseEntity.ok(service.findByNameContainingIgnoreCase(nome));
+	@GetMapping("/like/{name}")
+	public ResponseEntity<List<Equipe>> findByNameContainingIgnoreCase(@PathVariable String name){
+		return ResponseEntity.ok(service.findByNameContainingIgnoreCase(name));
 	}
 
 }

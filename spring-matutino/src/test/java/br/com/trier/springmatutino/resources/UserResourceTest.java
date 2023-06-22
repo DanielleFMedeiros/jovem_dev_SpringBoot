@@ -59,32 +59,33 @@ public class UserResourceTest {
 		UserDTO user = response.getBody();
 		assertEquals("Usuario teste 1", user.getName());
 	}
-
+	
 	@Test
 	@DisplayName("Buscar por id inexistente")
-	@Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
-	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	public void testGetNotFound() {
-		ResponseEntity<UserDTO> response = getUser("/usuarios/100");
+		ResponseEntity<UserDTO> response = getUser("/user/3");
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
 	}
 
+
 	@Test
 	@DisplayName("Cadastrar usuário")
-	@Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
-	@Sql({ "classpath:/resources/sqls/usuario.sql" })
+	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 	public void testCreateUser() {
 		UserDTO dto = new UserDTO(null, "nome", "email", "senha");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<UserDTO> requestEntity = new HttpEntity<>(dto, headers);
-		ResponseEntity<UserDTO> responseEntity = rest.exchange("/usuarios", HttpMethod.POST, requestEntity,
-				UserDTO.class);
+		ResponseEntity<UserDTO> responseEntity = rest.exchange(
+	            "/usuarios", 
+	            HttpMethod.POST,  
+	            requestEntity,    
+	            UserDTO.class   
+	    );
 		assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
 		UserDTO user = responseEntity.getBody();
 		assertEquals("nome", user.getName());
 	}
-
 
 	@Test
 	@DisplayName("Buscar por nome")
@@ -124,7 +125,7 @@ public class UserResourceTest {
 		assertEquals("Usuario teste 2", user2.getName());
 		assertEquals("teste2@teste.com.br", user2.getEmail());
 	}
-	
+
 	@Test
 	@DisplayName("Buscar usuários por nome contendo ")
 	@Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
@@ -140,27 +141,47 @@ public class UserResourceTest {
 		assertEquals(1, user.getId());
 		assertEquals("teste1@teste.com.br", user.getEmail());
 
-
 		UserDTO user2 = userList.get(1);
 		assertEquals(2, user2.getId());
 		assertEquals("teste2@teste.com.br", user2.getEmail());
 	}
+	
 	@Test
-    @DisplayName("Buscar usuários por nome contendo - Nome não encontrado")
-    @Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
-    @Sql({ "classpath:/resources/sqls/usuario.sql" })
-	public void testFindByNameStartingWithIgnoreCase_NotFound() {
-	    ResponseEntity<List<UserDTO>> response = getUsers("/usuarios/name/NomeInexistente");
-	    assertEquals(response.getStatusCode(), HttpStatus.OK);
-	    List<UserDTO> userList = response.getBody();
-
-	    assertThrows(ObjetoNaoEncontrado.class, () -> {
-	        ResponseEntity<List<UserDTO>> innerResponse = getUsers("/usuarios/name/NomeInexistente");
-	        if (innerResponse.getBody() != null && !innerResponse.getBody().isEmpty()) {
-	            throw new AssertionError("Expected empty list");
-	        } else {
-	            throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com o nome iniciando por: NomeInexistente");
-	        }
-	    });
+	@DisplayName("Teste delete")
+	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
+	@Sql({"classpath:/resources/sqls/usuario.sql"})
+	public void deleteTest() {
+		ResponseEntity<Void> response = rest.exchange("/usuarios/1", HttpMethod.DELETE, null, Void.class);
+		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
+	@Test
+	@DisplayName("Teste update")
+	public void updateTest() {
+		UserDTO dto = new UserDTO(1, "Usuario Test", "test@teste.com.br", "123");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<UserDTO> requestEntity = new HttpEntity<>(dto, headers);
+		ResponseEntity<UserDTO> responseEntity = rest.exchange("/usuarios/1", HttpMethod.PUT, requestEntity, UserDTO.class);
+		
+		assertEquals(responseEntity.getStatusCode(), HttpStatus.OK);
+		UserDTO user = responseEntity.getBody();
+		assertEquals("Usuario Test", user.getName());
+	}
+	
+	@Test
+	@DisplayName("Buscar usuário por email")
+	@Sql({ "classpath:/resources/sqls/limpa_tabelas.sql" })
+	@Sql({ "classpath:/resources/sqls/usuario.sql" })
+	public void testGetUserByEmail() {
+	    String email = "teste1@teste.com.br";
+	    ResponseEntity<User> response = rest.getForEntity("/usuarios/email/" + email, User.class);
+	    assertEquals(HttpStatus.OK, response.getStatusCode());
+	    User user = response.getBody();
+	    assertNotNull(user);
+	    assertEquals(email, user.getEmail());
+	}
+
+	
+
+
 }

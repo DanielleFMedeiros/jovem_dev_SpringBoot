@@ -25,16 +25,10 @@ public class UserResource {
 	private UserService service;
 
 	@PostMapping
-	
-	/*
-	 * FIXME: retirar os if else, tratar
-	 */
-	public ResponseEntity<User> insert(@RequestBody User user) {
-		
-		User newUser = service.salvar(user);
-		return newUser != null ? ResponseEntity.ok(newUser) : ResponseEntity.badRequest().build();
+	public ResponseEntity<UserDTO> salvar(@RequestBody UserDTO userDTO){
+		User newUser = service.salvar(new User(userDTO));
+		return ResponseEntity.ok(newUser.toDto());
 	}
-
 	@GetMapping("/{id}")
 	public ResponseEntity<UserDTO> buscaPorCodigo(@PathVariable Integer id) {
 		User user = service.findById(id);
@@ -61,11 +55,11 @@ public class UserResource {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+	public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO){
 		User user = new User(userDTO);
 		user.setId(id);
 		user = service.update(user);
-		return user != null ? ResponseEntity.ok(user.toDto()) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok(user.toDto());
 	}
 
 	@DeleteMapping("/{id}")

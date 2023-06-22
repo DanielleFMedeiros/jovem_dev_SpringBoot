@@ -21,16 +21,16 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 	private CampeonatoRepository repository;
 
 	private void validaCampeonato(Campeonato campeonato) {
-	    if (campeonato == null) {
-	        throw new ViolacaoIntegridade("Campeonato nulo");
-	    }
-	    if (campeonato.getDescricao() == null || campeonato.getDescricao().isEmpty()) {
-	        throw new ViolacaoIntegridade("A descrição está vazia");
-	    }
-	    int anoAtual = Year.now().getValue();
-	    if (campeonato.getAno() == null || campeonato.getAno() <= 1990 || campeonato.getAno() >= anoAtual + 1) {
-	        throw new ViolacaoIntegridade("O ano precisa ser maior ou igual a 1990 e menor ou igual a "+ anoAtual);
-	    }
+		if (campeonato == null) {
+			throw new ViolacaoIntegridade("Campeonato nulo");
+		}
+		if (campeonato.getDescricao() == null || campeonato.getDescricao().isEmpty()) {
+			throw new ViolacaoIntegridade("A descrição está vazia");
+		}
+		int anoAtual = Year.now().getValue();
+		if (campeonato.getAno() == null || campeonato.getAno() <= 1990 || campeonato.getAno() >= anoAtual + 1) {
+			throw new ViolacaoIntegridade("O ano precisa ser maior ou igual a 1990 e menor ou igual a " + anoAtual);
+		}
 	}
 
 	@Override
@@ -41,13 +41,12 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public List<Campeonato> listAll() {
-	    List<Campeonato> campeonatos = repository.findAll();
-	    if (campeonatos.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("Não há campeonatos cadastrados");
-	    }
-	    return campeonatos;
+		List<Campeonato> campeonatos = repository.findAll();
+		if (campeonatos.isEmpty()) {
+			throw new ObjetoNaoEncontrado("Não há campeonatos cadastrados");
+		}
+		return campeonatos;
 	}
-
 
 	@Override
 	public Campeonato findById(Integer id) {
@@ -84,41 +83,33 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public List<Campeonato> findByAno(Integer ano) {
-	    if (ano == null) {
-	        throw new ObjetoNaoEncontrado("O ano não pode ser nulo");
-	    }
-	    
-	    int anoAtual = Calendar.getInstance().get(Calendar.YEAR);
-	    if (ano < 1990 || ano > anoAtual + 1) {
-	        throw new ObjetoNaoEncontrado("Ano inválido");
-	    }
-	    
-	    List<Campeonato> campeonatos = repository.findByAno(ano);
-	    
-	    if (campeonatos.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("Nenhum campeonato encontrado para o ano especificado");
-	    }
-	    
-	    return campeonatos;
+		if (ano == null) {
+			throw new ObjetoNaoEncontrado("O ano não pode ser nulo");
+		}
+
+		int anoAtual = Calendar.getInstance().get(Calendar.YEAR);
+		if (ano < 1990 || ano > anoAtual) {
+			throw new ObjetoNaoEncontrado("Ano inválido");
+		}
+
+		List<Campeonato> campeonatos = repository.findByAno(ano);
+
+		return campeonatos;
 	}
-
-
 
 	@Override
 	public List<Campeonato> findByDescricaoLike(String descricao) {
-	    if (descricao == null || descricao.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("A descrição está vazia");
-	    }
+		if (descricao == null || descricao.isEmpty()) {
+			throw new ObjetoNaoEncontrado("A descrição está vazia");
+		}
 
-	    List<Campeonato> campeonatos = repository.findByDescricaoLike(descricao);
-	    if (campeonatos.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("Nenhum campeonato encontrado com a descrição fornecida");
-	    }
+		List<Campeonato> campeonatos = repository.findByDescricaoLike(descricao);
+		if (campeonatos.isEmpty()) {
+			throw new ObjetoNaoEncontrado("Nenhum campeonato encontrado com a descrição fornecida");
+		}
 
-	    return campeonatos;
+		return campeonatos;
 	}
-
-
 
 	@Override
 	public boolean validateYear(Integer year) {

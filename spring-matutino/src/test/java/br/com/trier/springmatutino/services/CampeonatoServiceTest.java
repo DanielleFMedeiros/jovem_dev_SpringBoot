@@ -50,7 +50,7 @@ public class CampeonatoServiceTest extends BaseTests {
 		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.listAll());
 		assertEquals("Não há campeonatos cadastrados", exception.getMessage());
 	}
-	
+
 	@Test
 	@DisplayName("Teste incluir campeonato")
 	void insertCampeonatoTest() {
@@ -62,14 +62,14 @@ public class CampeonatoServiceTest extends BaseTests {
 		assertEquals("Campeonato 8", campeonato.getDescricao());
 		assertEquals(2021, campeonato.getAno());
 	}
-	
+
 	@Test
 	@DisplayName("Teste incluir campeonato inválido")
 	void insertCampeonatoInvalidoTest() {
 		var campeonato = new Campeonato(null, "Campeonato 8", 2024);
 		var exception = assertThrows(ViolacaoIntegridade.class, () -> campeonatoService.salvar(campeonato));
 		assertEquals("O ano precisa ser maior ou igual a 1990 e menor ou igual a 2023", exception.getMessage());
-		
+
 		var campeonato2 = new Campeonato(null, "", null);
 		var exception2 = assertThrows(ViolacaoIntegridade.class, () -> campeonatoService.salvar(campeonato2));
 		assertEquals("A descrição está vazia", exception2.getMessage());
@@ -150,18 +150,19 @@ public class CampeonatoServiceTest extends BaseTests {
 		assertTrue(campeonatoService.validateYear(campeonato1.getAno()));
 
 	}
-	
+
 	@Test
 	@DisplayName("Teste buscar campeonato por ano inválido")
 	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
 	void findByAnoInvalid() {
-	    Integer ano = null;
 
-	    var exception = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByAno(ano));
-	    assertEquals("O ano não pode ser nulo", exception.getMessage());
+		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByAno(null));
+		assertEquals("O ano não pode ser nulo", exception.getMessage());
+
+		var exception1 = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByAno(2024));
+		assertEquals("Ano inválido", exception1.getMessage());
+
 	}
-
-
 
 	@Test
 	@DisplayName("Teste buscar campeonato por descrição (like)")
@@ -174,21 +175,22 @@ public class CampeonatoServiceTest extends BaseTests {
 		assertEquals(2, campeonatos.size());
 
 	}
-	
+
 	@Test
 	@DisplayName("Teste buscar campeonato por descrição inválida (like)")
 	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
 	void findByDescricaoLikeInvalid() {
-	    // Testando quando a descrição é vazia
-	    String descricaoVazia = "";
-	    var exceptionVazia = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByDescricaoLike(descricaoVazia));
-	    assertEquals("A descrição está vazia", exceptionVazia.getMessage());
+		// Testando quando a descrição é vazia
+		String descricaoVazia = "";
+		var exceptionVazia = assertThrows(ObjetoNaoEncontrado.class,
+				() -> campeonatoService.findByDescricaoLike(descricaoVazia));
+		assertEquals("A descrição está vazia", exceptionVazia.getMessage());
 
-	    // Testando quando a descrição não está no banco de dados
-	    String descricaoInexistente = "CampeonatoXYZ%";
-	    var exceptionInexistente = assertThrows(ObjetoNaoEncontrado.class, () -> campeonatoService.findByDescricaoLike(descricaoInexistente));
-	    assertEquals("Nenhum campeonato encontrado com a descrição fornecida", exceptionInexistente.getMessage());
+		// Testando quando a descrição não está no banco de dados
+		String descricaoInexistente = "CampeonatoXYZ%";
+		var exceptionInexistente = assertThrows(ObjetoNaoEncontrado.class,
+				() -> campeonatoService.findByDescricaoLike(descricaoInexistente));
+		assertEquals("Nenhum campeonato encontrado com a descrição fornecida", exceptionInexistente.getMessage());
 	}
-
 
 }

@@ -1,6 +1,7 @@
 package br.com.trier.springmatutino.services.impl;
 
 import java.time.Year;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,24 +78,47 @@ public class CampeonatoServiceImpl implements CampeonatoService {
 
 	@Override
 	public List<Campeonato> findByAnoBetween(Integer startYear, Integer endYear) {
-		if (!validateYear(startYear) || !validateYear(endYear)) {
-			throw new ViolacaoIntegridade("O ano precisa ser maior que 1990 e menor que 2023");
-		}
+
 		return repository.findByAnoBetween(startYear, endYear);
 	}
 
 	@Override
 	public List<Campeonato> findByAno(Integer ano) {
-		return repository.findByAno(ano);
+	    if (ano == null) {
+	        throw new ObjetoNaoEncontrado("O ano não pode ser nulo");
+	    }
+	    
+	    int anoAtual = Calendar.getInstance().get(Calendar.YEAR);
+	    if (ano < 1990 || ano > anoAtual + 1) {
+	        throw new ObjetoNaoEncontrado("Ano inválido");
+	    }
+	    
+	    List<Campeonato> campeonatos = repository.findByAno(ano);
+	    
+	    if (campeonatos.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("Nenhum campeonato encontrado para o ano especificado");
+	    }
+	    
+	    return campeonatos;
 	}
-//terminar
+
+
+
 	@Override
 	public List<Campeonato> findByDescricaoLike(String descricao) {
-		if (campeonato.getDescricao() == null || campeonato.getDescricao().isEmpty()) {
-	        throw new ViolacaoIntegridade("A descrição está vazia");
+	    if (descricao == null || descricao.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("A descrição está vazia");
 	    }
-		return repository.findByDescricaoLike(descricao);
+
+	    List<Campeonato> campeonatos = repository.findByDescricaoLike(descricao);
+	    if (campeonatos.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("Nenhum campeonato encontrado com a descrição fornecida");
+	    }
+
+	    return campeonatos;
 	}
+
+
 
 	@Override
 	public boolean validateYear(Integer year) {

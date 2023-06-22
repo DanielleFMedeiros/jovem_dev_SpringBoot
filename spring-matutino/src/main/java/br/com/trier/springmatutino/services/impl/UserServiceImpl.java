@@ -73,8 +73,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> findByNameStartingWithIgnoreCase(String name) {
-		return repository.findByNameStartingWithIgnoreCase(name);
+	    List<User> users = repository.findByNameStartingWithIgnoreCase(name);
+	    
+	    if (users.isEmpty()) {
+	        throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com o nome iniciando por: " + name);
+	    }
+	    
+	    return users;
 	}
+
 
 	@Override
 	public User findByEmail(String email) {

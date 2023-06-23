@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class RaceDTO {
+public class PilotoDTO {
 	private Integer id;
-	private String data;
-	private Integer speedwayId;
-	private String speedwayName;
-	private Integer championshipId;
-	private String championshipName;
+	private String name;
+	private Integer paisId;
+	private String paisName;
+	private Integer equipeId;
+	private String equipeName;
 }

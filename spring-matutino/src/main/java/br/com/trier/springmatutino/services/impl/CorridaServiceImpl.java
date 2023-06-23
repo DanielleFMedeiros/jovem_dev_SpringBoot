@@ -37,7 +37,7 @@ public class CorridaServiceImpl implements CorridaService{
 	private void validarData(Corrida corrida) {
 		int anoCampeonato = (corrida.getCampeonato().getAno());
 		if(corrida.getData().getYear() != anoCampeonato) {
-			throw new ViolacaoIntegridade("O ano da corrida precisa ser igual ao ano do campeonato");
+			throw new ObjetoNaoEncontrado("O ano da corrida deve ser igual ao ano do campeonato");
 		}
 	}
 

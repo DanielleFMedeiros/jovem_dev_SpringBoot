@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.domain.Pista;
-import br.com.trier.springmatutino.repositories.PaisRepository;
 import br.com.trier.springmatutino.repositories.PistaRepository;
 import br.com.trier.springmatutino.services.PistaService;
 import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;

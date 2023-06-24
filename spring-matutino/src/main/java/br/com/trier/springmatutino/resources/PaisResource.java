@@ -24,7 +24,7 @@ public class PaisResource {
 	private PaisService service;
 
 	@PostMapping
-	public ResponseEntity<Pais> insert(@RequestBody Pais pais) {
+	public ResponseEntity<Pais> salvar(@RequestBody Pais pais) {
 		return ResponseEntity.ok(service.salvar(pais));
 	}
 

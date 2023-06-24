@@ -31,7 +31,7 @@ public class PilotoCorridaResource {
 	private PilotoService pilotoService;
 
 	@PostMapping
-	public ResponseEntity<PilotoCorridaDTO> insert(@RequestBody PilotoCorridaDTO pilotoCorridaDTO) {
+	public ResponseEntity<PilotoCorridaDTO> salvar(@RequestBody PilotoCorridaDTO pilotoCorridaDTO) {
 		return ResponseEntity.ok(service
 				.salvar(new PilotoCorrida(pilotoCorridaDTO, pilotoService.findById(pilotoCorridaDTO.getPilotoId()),
 						corridaService.findById(pilotoCorridaDTO.getCorridaId())))

@@ -24,7 +24,7 @@ public class EquipeResource {
 	private EquipeService service;
 
 	@PostMapping
-	public ResponseEntity<Equipe> insert(@RequestBody Equipe equipe) {
+	public ResponseEntity<Equipe> salvar(@RequestBody Equipe equipe) {
 		return ResponseEntity.ok(service.salvar(equipe));
 	}
 

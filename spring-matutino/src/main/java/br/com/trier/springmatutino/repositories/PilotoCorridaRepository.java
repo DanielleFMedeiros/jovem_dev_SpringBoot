@@ -15,4 +15,6 @@ public interface PilotoCorridaRepository extends JpaRepository<PilotoCorrida, In
 	List<PilotoCorrida> findByPiloto(Piloto piloto);
 
 	List<PilotoCorrida> findByCorrida(Corrida corrida);
+
+	List<PilotoCorrida> findByCorridaOrderByColocacaoAsc(Corrida corrida);
 }

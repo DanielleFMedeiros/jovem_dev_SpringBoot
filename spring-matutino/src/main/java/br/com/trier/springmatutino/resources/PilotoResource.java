@@ -31,7 +31,7 @@ public class PilotoResource {
 	private PaisService paisService;
 
 	@PostMapping
-	public ResponseEntity<PilotoDTO> insert(@RequestBody PilotoDTO pilotoDTO) {
+	public ResponseEntity<PilotoDTO> salvar(@RequestBody PilotoDTO pilotoDTO) {
 		equipeService.findById(pilotoDTO.getEquipeId());
 		paisService.findById(pilotoDTO.getPaisId());
 		return ResponseEntity.ok(service.salvar(new Piloto(pilotoDTO)).toDTO());

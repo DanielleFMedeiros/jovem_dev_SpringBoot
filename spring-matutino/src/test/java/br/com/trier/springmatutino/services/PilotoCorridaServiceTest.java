@@ -13,7 +13,10 @@ import org.springframework.test.context.jdbc.Sql;
 import br.com.trier.springmatutino.BaseTests;
 import br.com.trier.springmatutino.domain.Campeonato;
 import br.com.trier.springmatutino.domain.Corrida;
+import br.com.trier.springmatutino.domain.Equipe;
+import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.domain.Piloto;
+import br.com.trier.springmatutino.domain.PilotoCorrida;
 import br.com.trier.springmatutino.domain.Pista;
 import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
 import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
@@ -32,20 +35,20 @@ public class PilotoCorridaServiceTest extends BaseTests {
 	void insertTest() {
 		var pilotoCorrida = new PilotoCorrida(null, new Piloto(1, null, null, null), new Corrida(1, null, null, null),
 				1);
-		service.insert(pilotoCorrida);
+		service.salvar(pilotoCorrida);
 		assertEquals(1, service.listAll().size());
 	}
 
 	@Test
-	@DisplayName("Teste inserir piloto_corrida invalida")
+	@DisplayName("Teste inserir piloto_corrida inválida")
 	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
-
 	void insertInvalidTest() {
+		var piloto = new Piloto(1, null, null, null);
+		var corrida = new Corrida(1, null, null, null);
+		var pilotoCorrida = new PilotoCorrida(null, piloto, corrida, null);
 
-		var pilotoCorrida = new PilotoCorrida(null, new Piloto(1, null, null, null), new Corrida(null, 1, null, null),
-				null);
-		var exception = assertThrows(ViolacaoIntegridade.class, () -> service.salvar(null));
-		assertEquals("O cadastro deve conter um registro", exception.getMessage());
+		var exception = assertThrows(ViolacaoIntegridade.class, () -> service.salvar(pilotoCorrida));
+		assertEquals("A colocação não pode ser nula ou = 0", exception.getMessage());
 	}
 
 	@Test
@@ -53,182 +56,92 @@ public class PilotoCorridaServiceTest extends BaseTests {
 	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
 	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
 	void updateTest() {
-		var pilotoCorrida = new PilotoCorrida(1, new Piloto(1, null, null, null), new Corrida(1, null, null, null), "Jefferson");
-		service.update(pilotoCorrida);
-		assertEquals("Jefferson", service.listAll().get(0).getColocacao());
-	}
-
-	@Test
-	@DisplayName("Teste alterar corrida inexistente")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void updateInvalidTest() {
-		ZonedDateTime data = ZonedDateTime.parse("2023-10-14T12:34:00Z");
-		var corrida = new Corrida(5, data, new Pista(1, null, null), new Campeonato(1, null, null));
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.update(corrida));
-		assertEquals("Essa corrida não existe", exception.getMessage());
-	}
-
-	@Test
-	@DisplayName("Teste deletar corrida")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void deleteTest() {
 		service.delete(1);
 		assertEquals(3, service.listAll().size());
 	}
 
 	@Test
-	@DisplayName("Teste deletar corrida inexistente")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void deleteNotFoundTest() {
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.delete(5));
-		assertEquals("Corrida id 5 não existe", exception.getMessage());
+	@DisplayName("Teste alterar piloto_corrida inexistente")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
+	void updateInvalidTest() {
+		var pilotoCorrida = new PilotoCorrida(10, new Piloto(1, null, null, null), new Corrida(1, null, null, null), 3);
+		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.update(pilotoCorrida));
+		assertEquals("Código não encontrado", exception.getMessage());
 	}
 
+	
 	@Test
-	@DisplayName("Teste listar todas as corridas")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void listAllTest() {
-		assertEquals(4, service.listAll().size());
-	}
-
-	@Test
-	@DisplayName("Teste listar todas as corridas com lista vazia")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	void listAllEmptyTest() {
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.listAll());
-		assertEquals("Não há corridas cadastradas", exception.getMessage());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corrida pelo id")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
+	@DisplayName("Teste buscar piloto_corrida por id")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
 	void findByIdTest() {
-		ZonedDateTime data = ZonedDateTime.parse("2023-10-19T12:34:00Z");
-		var corrida = service.findById(1);
-		assertEquals(1, corrida.getPista().getId());
-		assertEquals(data, corrida.getData());
+		var pilotoCorrida = service.findById(1);
+		assertEquals(1, pilotoCorrida.getColocacao());
+		assertEquals(1, pilotoCorrida.getPiloto().getId());
 	}
 
 	@Test
-	@DisplayName("Teste buscar corrida por id inexistente")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
+	@DisplayName("Teste buscar piloto_corrida por id inexistente")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
 	void findByIdNotFoundTest() {
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.findById(5));
-		assertEquals("Corrida id 5 não existe", exception.getMessage());
+		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.findById(8));
+		assertEquals("Piloto Corrida 8 não encontrado", exception.getMessage());
 	}
 
 	@Test
-	@DisplayName("Teste buscar corridas pela data")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByDataTest() {
-		ZonedDateTime data = ZonedDateTime.parse("2023-10-14T12:34:00Z");
-		var corridas = service.findByData(data);
-		assertEquals(2, corridas.get(0).getId());
+	@DisplayName("Teste buscar corridas de um piloto")
+	@Sql({"classpath:/resources/sqls/banco_dados.sql"})
+	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
+	void findByPilotoTest() {
+		var pilotoCorridas = service.findByPiloto(new Piloto(1, null, null, null));
+		assertEquals(2, pilotoCorridas.size());
+		assertEquals(1, pilotoCorridas.get(0).getCorrida().getId());
+		assertEquals(2, pilotoCorridas.get(1).getCorrida().getId());
 	}
 
 	@Test
-	@DisplayName("Teste buscar corrida por data inexistente")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByDataNotFoundTest() {
-		ZonedDateTime data = ZonedDateTime.parse("2025-06-24T12:34:00Z");
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.findByData(data));
-		assertEquals("Não há corridas na data 24/06/2025 12:34", exception.getMessage());
-	}
+	@DisplayName("Teste buscar corridas de um piloto sem achar")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
+	void findByPilotoNotFoundTest() {
 
-	@Test
-	@DisplayName("Teste buscar corridas entre datas")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByDataBetweenTest() {
-		ZonedDateTime dataInicial = ZonedDateTime.parse("2023-05-24T12:34:00Z");
-		ZonedDateTime dataFinal = ZonedDateTime.parse("2023-12-10T12:34:00Z");
-		var corridas = service.findByDataBetween(dataInicial, dataFinal);
-		assertEquals(2, corridas.size());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corridas entre datas inexistentes")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByDataBetweenNotFoundTest() {
-		ZonedDateTime dataIn = ZonedDateTime.parse("2024-10-22T12:34:00Z");
-		ZonedDateTime dataFin = ZonedDateTime.parse("2025-12-19T12:34:00Z");
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.findByDataBetween(dataIn, dataFin));
-		assertEquals("Não há corridas entre as datas 19/10/2025 12:34 e 22/12/2024 12:30", exception.getMessage());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corridas por pista")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByPistaTest() {
-		var corridas = service.findByPista(new Pista(1, null, null));
-		assertEquals(2, corridas.size());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corridas por pista sem achar")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByPistaNotFoundTest() {
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> service.findByPista(new Pista(3, null, null)));
-		assertEquals("Não há corridas na pista 3", exception.getMessage());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corridas por pista")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByCampeonatoTest() {
-		var corridas = service.findByCampeonato(new Campeonato(1, null, null));
-		assertEquals(2, corridas.size());
-	}
-
-	@Test
-	@DisplayName("Teste buscar corridas por pista sem achar")
-	@Sql({ "classpath:/resources/sqls/campeonato.sql" })
-	@Sql({ "classpath:/resources/sqls/pais.sql" })
-	@Sql({ "classpath:/resources/sqls/pista.sql" })
-	@Sql({ "classpath:/resources/sqls/corrida.sql" })
-	void findByCampeonatoNotFoundTest() {
 		var exception = assertThrows(ObjetoNaoEncontrado.class,
-				() -> service.findByCampeonato(new Campeonato(3, "Campeonato 3", null)));
-		assertEquals("Não há corridas no campeonato Campeonato 3", exception.getMessage());
+				() -> service.findByPiloto(new Piloto(6, null, null, null)));
+		assertEquals("Não há corridas desse piloto", exception.getMessage());
 	}
+
+	@Test
+	@DisplayName("Teste buscar pilotos de uma determinada corrida")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
+	void findByCorridaTest() {
+		var corridaPilotos = service.findByCorrida(new Corrida(1, null, null, null));
+		assertEquals(3, corridaPilotos.size());
+		assertEquals(1, corridaPilotos.get(0).getPiloto().getId());
+		assertEquals(2, corridaPilotos.get(1).getPiloto().getId());
+	}
+
+	@Test
+	@DisplayName("Teste buscar os pilotos de uma corrida sem achar")
+	@Sql({ "classpath:/resources/sqls/banco_dados.sql" })
+	@Sql({ "classpath:/resources/sqls/piloto_corrida.sql" })
+	void findByCorridaNotFoundTest() {
+		var exception = assertThrows(ObjetoNaoEncontrado.class,
+				() -> service.findByCorrida(new Corrida(4, null, null, null)));
+		assertEquals("Não há pilotos nessa corrida", exception.getMessage());
+	}
+
+	@Test
+	@DisplayName("Teste buscar os pilotos de uma corrida ordenados pela colocacao")
+	@Sql({"classpath:/resources/sqls/banco_dados.sql"})
+	@Sql({"classpath:/resources/sqls/piloto_corrida.sql"})
+	void findByCorridaOrderByColocacaoAscTest() {
+		var corridaPilotos = service.findByCorridaOrderByColocacaoAsc(new Corrida(1, null, null, null));
+		assertEquals(3, corridaPilotos.size());
+		assertEquals(1, corridaPilotos.get(0).getPiloto().getId());
+		assertEquals(2, corridaPilotos.get(1).getPiloto().getId());
+	}
+
 }

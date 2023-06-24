@@ -24,7 +24,7 @@ public class CampeonatoResource {
 	private CampeonatoService service;
 
 	@PostMapping
-	public ResponseEntity<Campeonato> insert(@RequestBody Campeonato campeonato) {
+	public ResponseEntity<Campeonato> salvar(@RequestBody Campeonato campeonato) {
 		return ResponseEntity.ok(service.salvar(campeonato));
 	}
 

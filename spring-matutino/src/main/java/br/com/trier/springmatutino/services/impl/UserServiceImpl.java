@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.trier.springmatutino.domain.User;
 import br.com.trier.springmatutino.repositories.UserRepository;
@@ -17,11 +20,23 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository repository;
+	
+	@Configuration
+	public class AppConfig {
+	    @Bean
+	    public RestTemplate restTemplate() {
+	        return new RestTemplate();
+	    }
+	}
+
 
 	private void findByEmail(User obj) {
-		User user = repository.findByEmail(obj.getEmail());
-		if (user != null && user.getId() != obj.getId()) {
-			throw new ViolacaoIntegridade("E-mail já cadastrado: %s".formatted(obj.getEmail()));
+		Optional<User> userOptional = repository.findByEmail(obj.getEmail());
+		if (userOptional.isPresent()) {
+			User user = userOptional.get();
+			if (user.getId() != obj.getId()) {
+				throw new ViolacaoIntegridade("E-mail já cadastrado: %s".formatted(obj.getEmail()));
+			}
 		}
 	}
 
@@ -73,19 +88,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<User> findByNameStartingWithIgnoreCase(String name) {
-	    List<User> users = repository.findByNameStartingWithIgnoreCase(name);
-	    
-	    if (users.isEmpty()) {
-	        throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com o nome iniciando por: " + name);
-	    }
-	    
-	    return users;
-	}
+		List<User> users = repository.findByNameStartingWithIgnoreCase(name);
 
+		if (users.isEmpty()) {
+			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com o nome iniciando por: " + name);
+		}
+
+		return users;
+	}
 
 	@Override
 	public User findByEmail(String email) {
-		User user = repository.findByEmail(email);
+		User user = repository.findByEmail(email).orElse(null);
 		if (user == null) {
 			throw new ObjetoNaoEncontrado("Nenhum usuário encontrado com esse email " + email);
 		}

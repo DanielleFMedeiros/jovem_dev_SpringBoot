@@ -5,15 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.web.client.RestTemplate;
 
 import br.com.trier.springmatutino.BaseTests;
 import br.com.trier.springmatutino.domain.User;
+import br.com.trier.springmatutino.domain.dto.UserDTO;
 import br.com.trier.springmatutino.services.exceptions.ObjetoNaoEncontrado;
 import br.com.trier.springmatutino.services.exceptions.ViolacaoIntegridade;
 import jakarta.transaction.Transactional;
@@ -24,11 +30,24 @@ public class UserServiceTest extends BaseTests {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	private RestTemplate rest;
+
 	@Test
 	@DisplayName("Teste buscar usuário por ID inexistente")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void findByIdNonExistentTest() {
-		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> userService.findById(10));
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+
+		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> {
+			ResponseEntity<UserDTO> responseEntity = rest.exchange("/usuarios/10", HttpMethod.GET, requestEntity,
+					UserDTO.class);
+		});
 		assertEquals("Usuário 10 não encontrado", exception.getMessage());
 	}
 
@@ -37,6 +56,12 @@ public class UserServiceTest extends BaseTests {
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void listAllNonExistTest() {
 		List<User> lista = userService.listAll();
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		userService.delete(1);
 		userService.delete(2);
 		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> userService.listAll());
@@ -48,6 +73,12 @@ public class UserServiceTest extends BaseTests {
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void listAllTest() {
 		List<User> lista = userService.listAll();
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		assertEquals(2, lista.size());
 		assertEquals(1, lista.get(0).getId());
 
@@ -57,7 +88,13 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste alterar usuário com email duplicado")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void updateUserWithDuplicateEmailTest() {
-		User user = new User(2, "Usuario teste 2", "teste1@teste.com.br", "124");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		User user = new User(2, "Usuario teste 2", "teste1@teste.com.br", "124", "ADMIN");
 
 		var exception = assertThrows(ViolacaoIntegridade.class, () -> userService.update(user));
 		assertEquals("E-mail já cadastrado: teste1@teste.com.br", exception.getMessage());
@@ -67,6 +104,12 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste buscar usuário por nome que inicia com")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void findUserByNameStartsWithTest() {
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		List<User> lista = userService.findByNameStartingWithIgnoreCase("Usuario");
 		assertEquals(2, lista.size());
 		lista = userService.findByName("Usuario teste 1");
@@ -80,7 +123,13 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste alterar usuário")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void UpdateUserTest() {
-		var usuario = new User(1, "altera", "altera", "altera");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		var usuario = new User(1, "altera", "altera", "altera", "ADMIN");
 		userService.update(usuario);
 		usuario = userService.findById(1);
 		assertThat(usuario).isNotNull();
@@ -94,6 +143,12 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste excluir usuário inexistente")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void deleteNonExistentTest() {
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> userService.findById(20));
 		assertEquals("Usuário 20 não encontrado", exception.getMessage());
 	}
@@ -101,7 +156,13 @@ public class UserServiceTest extends BaseTests {
 	@Test
 	@DisplayName("Teste incluir usuário")
 	void insertUserTest() {
-		var usuario = new User(null, "nome", "email", "senha");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		var usuario = new User(null, "nome", "email", "senha", "ADMIN");
 		userService.salvar(usuario);
 		usuario = userService.findById(1);
 		assertThat(usuario).isNotNull();
@@ -109,13 +170,20 @@ public class UserServiceTest extends BaseTests {
 		assertEquals("nome", usuario.getName());
 		assertEquals("email", usuario.getEmail());
 		assertEquals("senha", usuario.getPassword());
+		assertEquals("ADMIN", usuario.getRoles());
 	}
 
 	@Test
 	@DisplayName("Teste incluir usuário com email duplicado")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void insertUserWithDuplicateEmailTest() {
-		var usuario = new User(null, "Novo Usuário", "teste1@teste.com.br", "senha");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		var usuario = new User(null, "Novo Usuário", "teste1@teste.com.br", "senha", "ADMIN");
 
 		var exception = assertThrows(ViolacaoIntegridade.class, () -> userService.salvar(usuario));
 		assertEquals("E-mail já cadastrado: teste1@teste.com.br", exception.getMessage());
@@ -126,6 +194,12 @@ public class UserServiceTest extends BaseTests {
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void findByIdTest() {
 		var usuario = userService.findById(1);
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		assertThat(usuario).isNotNull();
 		assertEquals(1, usuario.getId());
 		assertEquals("Usuario teste 1", usuario.getName());
@@ -137,6 +211,12 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste excluir usuário")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void DeleteUserTest() {
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		userService.delete(1);
 		List<User> lista = userService.listAll();
 		assertEquals(1, lista.size());
@@ -147,7 +227,13 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste alterar usuário inexistente")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void updateUserNonExistentTest() {
-		var user = new User(6, "altera", "altera@hotmail", "altera");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		var user = new User(6, "altera", "altera@hotmail", "altera", "ADMIN");
 
 		assertThrows(ObjetoNaoEncontrado.class, () -> userService.update(user), "Usuário 6 não encontrado");
 	}
@@ -158,18 +244,32 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste salvar usuário")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void salvarTest() {
-		var usuario = new User(1, "Usuario teste 1", "teste1@teste.com.br", "123");
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+		var usuario = new User(1, "Usuario teste 1", "teste1@teste.com.br", "123", "ADMIN");
 		userService.salvar(usuario);
 		assertEquals(1, usuario.getId());
 		assertEquals("Usuario teste 1", usuario.getName());
 		assertEquals("teste1@teste.com.br", usuario.getEmail());
 		assertEquals("123", usuario.getPassword());
+		assertEquals("ADMIN", usuario.getRoles());
 	}
 
 	@Test
 	@DisplayName("Teste buscar usuário por email inválido")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void findByInvalidEmailTest() {
+		
+		org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Authorization", "Bearer " + token);
+
+		HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		var email = "email_invalido@teste.com";
 
 		var exception = assertThrows(ObjetoNaoEncontrado.class, () -> userService.findByEmail(email));
@@ -180,6 +280,12 @@ public class UserServiceTest extends BaseTests {
 	@DisplayName("Teste buscar usuário por email")
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	void findByEmailTest() {
+	    org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+	    
+	    String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+	    headers.set("Authorization", "Bearer " + token);
+	    
+	    HttpEntity<?> requestEntity = new HttpEntity<>(headers);
 		var email = "teste1@teste.com.br";
 
 		var usuario = userService.findByEmail(email);

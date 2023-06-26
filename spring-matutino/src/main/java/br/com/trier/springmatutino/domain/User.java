@@ -31,15 +31,18 @@ public class User {
 	@Column(name = "email_usuario", unique = true)
 	private String email;
 
+	@Column(name = "permissoes_usuario")
+	private String roles;
+	
 	@Column(name = "senha_usuario")
 	private String password;
 
 	public User(UserDTO dto) {
-		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword());
+		this(dto.getId(), dto.getName(), dto.getEmail(), dto.getPassword(), dto.getRoles());
 	}
 
 	public UserDTO toDto() {
-		return new UserDTO(this.id, this.name, this.email, this.password);
+		return new UserDTO(id, name, email, password, roles);
 	}
 
 }

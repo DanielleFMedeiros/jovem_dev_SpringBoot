@@ -50,6 +50,10 @@ public class UserResourceTest {
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	public void testGetOk() {
 		ResponseEntity<UserDTO> response = getUser("/usuarios/1");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		UserDTO user = response.getBody();
 		assertEquals("Usuario teste 1", user.getName());
@@ -59,6 +63,10 @@ public class UserResourceTest {
 	@DisplayName("Buscar por id inexistente")
 	public void testGetNotFound() {
 		ResponseEntity<UserDTO> response = getUser("/user/3");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
 	}
 
@@ -67,9 +75,11 @@ public class UserResourceTest {
 	@DisplayName("Cadastrar usuário")
 	@Sql({"classpath:/resources/sqls/limpa_tabelas.sql"})
 	public void testCreateUser() {
-		UserDTO dto = new UserDTO(null, "nome", "email", "senha");
+		UserDTO dto = new UserDTO(null, "nome", "email", "senha","ADMIN");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+		headers.set("Autorização", "Bearer" + token);
 		HttpEntity<UserDTO> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<UserDTO> responseEntity = rest.exchange(
 	            "/usuarios", 
@@ -91,7 +101,10 @@ public class UserResourceTest {
 		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios/name/Usuario teste 1");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<UserDTO> userList = response.getBody();
-
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(1, userList.size());
 
 		UserDTO user = userList.get(0);
@@ -107,7 +120,10 @@ public class UserResourceTest {
 		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<UserDTO> userList = response.getBody();
-
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(2, userList.size());
 
 		UserDTO user1 = userList.get(0);
@@ -129,7 +145,10 @@ public class UserResourceTest {
 		ResponseEntity<List<UserDTO>> response = getUsers("/usuarios/name/Usuario");
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 		List<UserDTO> userList = response.getBody();
-
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(2, userList.size());
 
 		UserDTO user = userList.get(0);
@@ -147,14 +166,20 @@ public class UserResourceTest {
 	@Sql({"classpath:/resources/sqls/usuario.sql"})
 	public void deleteTest() {
 		ResponseEntity<Void> response = rest.exchange("/usuarios/1", HttpMethod.DELETE, null, Void.class);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+		headers.set("Autorização", "Bearer" + token);
 		assertEquals(response.getStatusCode(), HttpStatus.OK);
 	}
 	@Test
 	@DisplayName("Teste update")
 	public void updateTest() {
-		UserDTO dto = new UserDTO(1, "Usuario Test", "test@teste.com.br", "123");
+		UserDTO dto = new UserDTO(1, "Usuario Test", "test@teste.com.br", "123","ADMIN");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYW5pZWxsZSIsImlhdCI6MTY4Nzc4ODA3MCwiZXhwIjoxNjg3Nzg5ODcwfQ.QyDSGibIjeWHLy6t_y4sgAnHygMt--Je32FlzXb_Lbk";
+		headers.set("Autorização", "Bearer" + token);
 		HttpEntity<UserDTO> requestEntity = new HttpEntity<>(dto, headers);
 		ResponseEntity<UserDTO> responseEntity = rest.exchange("/usuarios/1", HttpMethod.PUT, requestEntity, UserDTO.class);
 		
@@ -169,11 +194,17 @@ public class UserResourceTest {
 	@Sql({ "classpath:/resources/sqls/usuario.sql" })
 	public void testGetUserByEmail() {
 	    String email = "teste1@teste.com.br";
+	    
 	    ResponseEntity<User> response = rest.getForEntity("/usuarios/email/" + email, User.class);
+	    HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us";
+		headers.set("Autorização", "Bearer" + token);
 	    assertEquals(HttpStatus.OK, response.getStatusCode());
 	    User user = response.getBody();
 	    assertNotNull(user);
 	    assertEquals(email, user.getEmail());
+	   //user eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJEYXZpZCIsImlhdCI6MTY4Nzc4NzI0OCwiZXhwIjoxNjg3Nzg5MDQ4fQ.k-mjUf144LbiBtWqRWdrMl_CZCIdGcTjPVswTEOm4Us
 	}
 
 	

@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +22,7 @@ public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter
 	@Column(name = "id_usuario")
 	private Integer id;
 
@@ -42,7 +43,7 @@ public class User {
 	}
 
 	public UserDTO toDto() {
-		return new UserDTO(id, name, email, password, roles);
+		return new UserDTO(this.id, this.name, this.email, this.password, this.roles);
 	}
 
 }

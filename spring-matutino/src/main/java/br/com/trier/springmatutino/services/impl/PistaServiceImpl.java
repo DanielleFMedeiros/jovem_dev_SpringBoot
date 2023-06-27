@@ -82,5 +82,14 @@ public class PistaServiceImpl implements PistaService {
 		return lista;
 	}
 
+	@Override
+	public List<Pista> findByPais(Pais pais) {
+		List<Pista> lista = repository.findByPais(pais);
+		if (lista.size() == 0) {
+			throw new ObjetoNaoEncontrado("Nenhuma pista cadastrada com esse país %s".formatted(pais));
+		}
+		return lista;
+	}
+
 
 }

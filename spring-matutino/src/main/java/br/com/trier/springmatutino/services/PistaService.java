@@ -20,4 +20,6 @@ public interface PistaService {
 
 	List<Pista> findByPaisOrderByTamanhoDesc(Pais pais);
 
+	List<Pista> findByPais(Pais pais);
+
 }

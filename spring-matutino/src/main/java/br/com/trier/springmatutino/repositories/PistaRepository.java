@@ -13,4 +13,6 @@ public interface PistaRepository extends JpaRepository<Pista, Integer>{
 	List<Pista> findByTamanhoBetween(Integer tamInicial, Integer tamFinal);
 	
 	List<Pista> findByPaisOrderByTamanhoDesc(Pais pais);
+
+	List<Pista> findByPais(Pais pais);
 }

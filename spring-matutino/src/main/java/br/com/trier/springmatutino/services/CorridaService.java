@@ -29,7 +29,6 @@ public interface CorridaService {
 
 	List<Corrida> findByCampeonato(Campeonato campeonato);
 
-	Collection<CorridaDTO> findByPiloto(Piloto piloto);
 
 
 }

@@ -1,5 +1,6 @@
 package br.com.trier.springmatutino.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -16,6 +17,7 @@ import br.com.trier.springmatutino.domain.Campeonato;
 import br.com.trier.springmatutino.domain.Corrida;
 import br.com.trier.springmatutino.domain.Pais;
 import br.com.trier.springmatutino.domain.Piloto;
+import br.com.trier.springmatutino.domain.Pista;
 import br.com.trier.springmatutino.domain.dto.CorridaDTO;
 import br.com.trier.springmatutino.domain.dto.CorridaPaisAnoDTO;
 import br.com.trier.springmatutino.services.CampeonatoService;
@@ -72,15 +74,28 @@ public class RelatorioResource {
 		return ResponseEntity.ok(new CorridaPaisAnoDTO(anoCorrida, campeonato.getDescricao(), corridasDTO));
 	}
 
-	@Secured({ "ROLE_USER" })
-	@GetMapping("/corridas_por_piloto/{piloto_id}/{anoCorrida}")
-	public ResponseEntity<List<CorridaDTO>> findCorridasPorPilotoEAno(@PathVariable("piloto_id") Integer pilotoId,
-			@PathVariable("anoCorrida") Integer anoCorrida) {
-		Piloto piloto = pilotoService.findById(pilotoId);
-		List<CorridaDTO> corridasDTO = corridaService.findByPiloto(piloto).stream()
-				.filter(corrida -> corrida.getId() == anoCorrida).collect(Collectors.toList());
+	@GetMapping("corridas-por-ano/{ano}")
+	public ResponseEntity<List<CorridaPaisAnoDTO>> findCorridasByAno(@PathVariable Integer ano) {
+		List<CorridaPaisAnoDTO> corridasPorPaisAno = new ArrayList<>();
 
-		return ResponseEntity.ok(corridasDTO);
+		List<Pais> paises = paisService.listAll();
+
+		for (Pais pais : paises) {
+			List<Pista> pistaPais = pistaService.findByPais(pais);
+
+			List<CorridaDTO> corridasDTO = pistaPais.stream().flatMap(pista -> {
+				try {
+					return corridaService.findByPista(pista).stream();
+				} catch (ObjetoNaoEncontrado e) {
+					return Stream.empty();
+				}
+			}).filter(corrida -> corrida.getData().getYear() == ano).map(Corrida::toDto).toList();
+
+			CorridaPaisAnoDTO corridaPaisAnoDTO = new CorridaPaisAnoDTO(ano, pais.getName(), corridasDTO);
+			corridasPorPaisAno.add(corridaPaisAnoDTO);
+		}
+
+		return ResponseEntity.ok(corridasPorPaisAno);
 	}
 
 }

@@ -30,4 +30,6 @@ public class Pista {
 
 	@ManyToOne()
 	private Pais pais;
+
+	
 }
